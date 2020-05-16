@@ -1,0 +1,38 @@
+{
+    "name": "apacheborys/location-bundle",
+    "type": "library",
+    "description": "Location bundle for manipulate and store places",
+    "keywords": [],
+    "homepage": "https://github.com/apacheborys/location-bundle/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Borys Yermokhin",
+            "email": "borys_ermokhin@yahoo.com"
+        }
+    ],
+    "require": {
+        "php": "^7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.5 || ^7.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "ApacheBorys\\Location\\": ["src/Common", "src/"]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": { "ApacheBorys\\Location\\Tests\\": "tests/" }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-master": "4.0-dev"
+        }
+    }
+}
