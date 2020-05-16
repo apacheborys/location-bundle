@@ -113,4 +113,6 @@ interface DataBaseInterface
     ): string;
 
     public function updateExistAdminLevels(): bool;
+
+    public function normalizeStringForKeyName(string $rawString);
 }

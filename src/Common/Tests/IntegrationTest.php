@@ -15,18 +15,17 @@ namespace ApacheBorys\Location\Tests;
 use Cache\Adapter\PHPArray\ArrayCachePool;
 use ApacheBorys\Location\IntegrationTest\CachedResponseClient;
 use ApacheBorys\Location\IntegrationTest\ProviderIntegrationTest;
-use ApacheBorys\Location\Location;
 use ApacheBorys\Location\Model\Address;
 use ApacheBorys\Location\Model\AdminLevel;
 use ApacheBorys\Location\Model\AdminLevelCollection;
 use ApacheBorys\Location\Model\Bounds;
-use ApacheBorys\Location\Model\Coordinate;
+use ApacheBorys\Location\Model\Coordinates;
 use ApacheBorys\Location\Model\Country;
 use ApacheBorys\Location\Database\Psr6Database;
 use ApacheBorys\Location\Model\DBConfig;
 use ApacheBorys\Location\Model\Place;
 use ApacheBorys\Location\Model\Polygon;
-use ApacheBorys\Location\StorageLocation;
+use ApacheBorys\Location\Location;
 use ApacheBorys\Location\Query\GeocodeQuery;
 use ApacheBorys\Location\Query\ReverseQuery;
 use Http\Client\HttpClient;
@@ -67,7 +66,7 @@ class IntegrationTest extends ProviderIntegrationTest
     protected function createProvider(HttpClient $httpClient)
     {
         $dataBase = new Psr6Database(new ArrayCachePool(), new DBConfig());
-        $provider = new StorageLocation($dataBase);
+        $provider = new Location($dataBase);
         $this->loadJsonCoordinates($provider);
 
         return $provider;
@@ -86,7 +85,7 @@ class IntegrationTest extends ProviderIntegrationTest
      */
     public function testNestedPolygons(float $lat, float $lon, array $expected)
     {
-        /** @var StorageLocation $provider */
+        /** @var Location $provider */
         $provider = $this->createProvider($this->getCachedHttpClient());
 
         $result = $provider->reverseQuery(ReverseQuery::fromCoordinates($lat, $lon)->withLocale('en'));
@@ -104,7 +103,7 @@ class IntegrationTest extends ProviderIntegrationTest
      */
     public function testGetAllPlaces()
     {
-        /** @var StorageLocation $provider */
+        /** @var Location $provider */
         $provider = $this->createProvider($this->getCachedHttpClient());
 
         $totalCount = 0;
@@ -124,7 +123,7 @@ class IntegrationTest extends ProviderIntegrationTest
      */
     public function testDeletePlace()
     {
-        /** @var StorageLocation $provider */
+        /** @var Location $provider */
         $provider = $this->createProvider($this->getCachedHttpClient());
 
         $places = \SplFixedArray::fromArray($provider->getAllPlaces());
@@ -263,7 +262,7 @@ class IntegrationTest extends ProviderIntegrationTest
         return '';
     }
 
-    private function loadJsonCoordinates(StorageLocation $provider): bool
+    private function loadJsonCoordinates(Location $provider): bool
     {
         $success = true;
         $dirPath = __DIR__ . DIRECTORY_SEPARATOR .DIRECTORY_SEPARATOR;

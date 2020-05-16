@@ -69,4 +69,60 @@ class Address
         $this->subLocality = $subLocality;
         $this->country = $country;
     }
+
+    /**
+     * @return string
+     */
+    public function getLocale(): string
+    {
+        return $this->locale;
+    }
+
+    /**
+     * @return AdminLevelCollection
+     */
+    public function getAdminLevels(): AdminLevelCollection
+    {
+        return $this->adminLevels;
+    }
+
+    /**
+     * @return int|string|null
+     */
+    public function getStreetNumber()
+    {
+        return $this->streetNumber;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getStreetName(): string
+    {
+        return $this->streetName;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSubLocality(): string
+    {
+        return $this->subLocality;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLocality(): string
+    {
+        return $this->locality;
+    }
+
+    /**
+     * @return Country|null
+     */
+    public function getCountry(): Country
+    {
+        return $this->country;
+    }
 }

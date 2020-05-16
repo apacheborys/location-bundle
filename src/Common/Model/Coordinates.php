@@ -17,7 +17,7 @@ use ApacheBorys\Location\Traits\ValidateCoordinatesTrait;
 /**
  * @author Borys Yermokhin <borys_ermokhin@yahoo.com>
  */
-class Coordinate implements Arrayable
+class Coordinates implements Arrayable
 {
     use ValidateCoordinatesTrait;
 
@@ -73,6 +73,6 @@ class Coordinate implements Arrayable
             }
         }
 
-        return new Coordinate((float)$raw['lon'], (float)$raw['lat']);
+        return new Coordinates((float)$raw['lon'], (float)$raw['lat']);
     }
 }

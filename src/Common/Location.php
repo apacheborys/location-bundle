@@ -12,13 +12,11 @@ declare(strict_types=1);
 
 namespace ApacheBorys\Location;
 
-use Geocoder\Collection;
 use ApacheBorys\Location\Model\Address;
 use ApacheBorys\Location\Model\AddressCollection;
 use ApacheBorys\Location\Model\AdminLevel;
 use ApacheBorys\Location\Model\AdminLevelCollection;
 use ApacheBorys\Location\Model\Coordinates;
-use ApacheBorys\Location\Provider\Provider;
 use ApacheBorys\Location\Database\DataBaseInterface;
 use ApacheBorys\Location\Model\Place;
 use ApacheBorys\Location\Model\Polygon;
@@ -28,7 +26,7 @@ use ApacheBorys\Location\Query\ReverseQuery;
 /**
  * @author Borys Yermokhin <borys_ermokhin@yahoo.com>
  */
-class StorageLocation implements Provider
+class Location
 {
     /**
      * @var DataBaseInterface
@@ -64,7 +62,7 @@ class StorageLocation implements Provider
     /**
      * {@inheritdoc}
      */
-    public function geocodeQuery(GeocodeQuery $query): Collection
+    public function geocodeQuery(GeocodeQuery $query): AddressCollection
     {
         $result = [];
         $places = $this->dataBase->get(
@@ -84,7 +82,7 @@ class StorageLocation implements Provider
     /**
      * {@inheritdoc}
      */
-    public function reverseQuery(ReverseQuery $query): Collection
+    public function reverseQuery(ReverseQuery $query): AddressCollection
     {
         $result = $this->findPlaceByCoordinates($query->getCoordinates(), $query->getLocale() ? $query->getLocale() : '');
 

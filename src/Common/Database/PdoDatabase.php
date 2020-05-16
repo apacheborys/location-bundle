@@ -16,7 +16,7 @@ use ApacheBorys\Location\Model\Address;
 use ApacheBorys\Location\Model\AdminLevel;
 use ApacheBorys\Location\Model\AdminLevelCollection;
 use ApacheBorys\Location\Model\Bounds;
-use ApacheBorys\Location\Model\Coordinate;
+use ApacheBorys\Location\Model\Coordinates;
 use ApacheBorys\Location\Model\Country;
 use ApacheBorys\Location\Database\PdoDatabase\Constants;
 use ApacheBorys\Location\Database\PdoDatabase\HelperInterface;
@@ -344,7 +344,7 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
                 $place->selectLocale($oldLocale);
 
                 break;
-            case Coordinate::class:
+            case Coordinates::class:
                 $oldLocale = $place->getSelectedLocale();
                 $place->selectLocale($locale);
 
@@ -458,7 +458,7 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
                         $rawAddress[Constants::LOCALE]
                     )
                 ),
-                new Coordinate(
+                new Coordinates(
                     $rawAddress[Constants::COORDINATE_LATITUDE],
                     $rawAddress[Constants::COORDINATE_LONGITUDE]
                 ),
@@ -501,7 +501,7 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
             foreach ($rawPolygons as $rawPolygon) {
                 $pln = (int) $rawPolygon[Constants::POLYGON_NUMBER];
                 $pnn = (int) $rawPolygon[Constants::POINT_NUMBER];
-                $polygonPoints[$pln][$pnn] = new Coordinate(
+                $polygonPoints[$pln][$pnn] = new Coordinates(
                     $rawPolygon[Constants::LATITUDE],
                     $rawPolygon[Constants::LONGITUDE]
                 );
