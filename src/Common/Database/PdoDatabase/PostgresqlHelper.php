@@ -31,6 +31,7 @@ final class PostgresqlHelper implements HelperInterface
 	"'.Constants::OBJECT_HASH.'"	TEXT NOT NULL UNIQUE,
 	"'.Constants::COMPRESSED_DATA.'"	BYTEA,
 	"'.Constants::PROVIDED_BY.'"	TEXT,
+	"'.Constants::LOCALE.'"	TEXT,
 	"'.Constants::BOUNDS_SOUTH.'"	REAL,
 	"'.Constants::BOUNDS_WEST.'"	REAL,
 	"'.Constants::BOUNDS_NORTH.'"	REAL,

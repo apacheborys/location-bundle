@@ -32,10 +32,6 @@ final class Constants
 
     const PROVIDED_BY = 'provided_by';
 
-    const COORDINATE_LATITUDE = 'coordinates_latitude';
-
-    const COORDINATE_LONGITUDE = 'coordinates_longitude';
-
     const BOUNDS_WEST = 'bounds_west';
 
     const BOUNDS_SOUTH = 'bounds_south';
@@ -64,8 +60,6 @@ final class Constants
 
     const NAME = 'name';
 
-    const CODE = 'code';
-
     const POLYGON_NUMBER = 'polygon_number';
 
     const POINT_NUMBER = 'point_number';
@@ -79,26 +73,25 @@ final class Constants
     const FIELDS_FOR_PLACE = [
         self::OBJECT_HASH => Place::class.'::objectHash',
         self::COMPRESSED_DATA => '',
+        self::PROVIDED_BY => Place::class.'::providedBy',
+        self::LOCALE => Place::class.'::locale',
+        self::BOUNDS_WEST => Bounds::class.'::west',
+        self::BOUNDS_SOUTH => Bounds::class.'::south',
+        self::BOUNDS_NORTH => Bounds::class.'::north',
+        self::BOUNDS_EAST => Bounds::class.'::east',
+        self::TIMEZONE => Place::class.'::timezone',
+        self::POSTAL_CODE => Place::class.'::postalCode',
     ];
 
     const FIELDS_FOR_ADDRESS = [
         self::OBJECT_HASH => Place::class.'::objectHash',
         self::LOCALE => Address::class.'::locale',
-        self::PROVIDED_BY => Address::class.'::providedBy',
-        self::COORDINATE_LATITUDE => Coordinates::class.'::latitude',
-        self::COORDINATE_LONGITUDE => Coordinates::class.'::longitude',
-        self::BOUNDS_WEST => Bounds::class.'::west',
-        self::BOUNDS_SOUTH => Bounds::class.'::south',
-        self::BOUNDS_NORTH => Bounds::class.'::north',
-        self::BOUNDS_EAST => Bounds::class.'::east',
         self::STREET_NUMBER => Address::class.'::streetNumber',
         self::STREET_NAME => Address::class.'::streetName',
-        self::POSTAL_CODE => Address::class.'::postalCode',
         self::LOCALITY => Address::class.'::locality',
         self::SUB_LOCALITY => Address::class.'::subLocality',
         self::COUNTRY_CODE => Country::class.'::code',
         self::COUNTRY_NAME => Country::class.'::name',
-        self::TIMEZONE => Address::class.'::timezone',
     ];
 
     const FIELDS_FOR_ADMIN_LEVEL = [
@@ -106,7 +99,6 @@ final class Constants
         self::LOCALE => Address::class.'::locale',
         self::LEVEL => AdminLevel::class.'::level',
         self::NAME => AdminLevel::class.'::name',
-        self::CODE => AdminLevel::class.'::code',
     ];
 
     const FIELDS_FOR_POLYGON = [

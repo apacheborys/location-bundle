@@ -155,7 +155,12 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
     private function insertPlace(Place $place): bool
     {
         $stmtPlace = $this->databaseProvider->prepare($this->helper->queryInsertPlace());
-        $stmtPlace->bindValue(':'.Constants::OBJECT_HASH, $place->getObjectHash());
+        foreach (Constants::FIELDS_FOR_PLACE as $field => $ref) {
+            if ($field === Constants::COMPRESSED_DATA) {
+                continue;
+            }
+            $stmtPlace->bindValue(':'.$field, $this->getValueForDb($place, $ref, Place::DEFAULT_LOCALE));
+        }
 
         if ($this->dbConfig->isUseCompression()) {
             $stmtPlace->bindValue(
@@ -221,7 +226,7 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
         $stmt = [];
 
         foreach ($place->getPolygons() as $polygonNumber => $polygon) {
-            foreach ($polygon->getCoordinate() as $coordNumber => $coordinate) {
+            foreach ($polygon->getCoordinates() as $coordNumber => $coordinate) {
                 $tempStmt = $this->databaseProvider->prepare($this->helper->queryInsertPolygon());
 
                 $tempStmt->bindValue(':'.Constants::OBJECT_HASH, $place->getObjectHash());
@@ -344,28 +349,11 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
                 $place->selectLocale($oldLocale);
 
                 break;
-            case Coordinates::class:
-                $oldLocale = $place->getSelectedLocale();
-                $place->selectLocale($locale);
-
-                $result = $this->getObjectValueThroughReflection(
-                    $place->getSelectedAddress()->getCoordinate(),
-                    $propertyName
-                );
-
-                $place->selectLocale($oldLocale);
-
-                break;
             case Bounds::class:
-                $oldLocale = $place->getSelectedLocale();
-                $place->selectLocale($locale);
-
                 $result = $this->getObjectValueThroughReflection(
-                    $place->getSelectedAddress()->getBounds(),
+                    $place->getBounds(),
                     $propertyName
                 );
-
-                $place->selectLocale($oldLocale);
 
                 break;
             case Country::class:
@@ -412,12 +400,12 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
 
     private function getPlace(string $objectHash): Place
     {
-        if ($this->dbConfig->isUseCompression()) {
-            $tempStmt = $this->databaseProvider->prepare($this->helper->querySelectSpecificPlace());
-            $tempStmt->bindValue(':'.Constants::OBJECT_HASH, $objectHash);
-            $tempStmt->execute();
+        $tempStmt = $this->databaseProvider->prepare($this->helper->querySelectSpecificPlace());
+        $tempStmt->bindValue(':'.Constants::OBJECT_HASH, $objectHash);
+        $tempStmt->execute();
+        $placeFromDb = $tempStmt->fetch(\PDO::FETCH_ASSOC);
 
-            $placeFromDb = $tempStmt->fetch(\PDO::FETCH_ASSOC);
+        if ($this->dbConfig->isUseCompression()) {
             if (is_array($placeFromDb) && isset($placeFromDb[Constants::COMPRESSED_DATA])) {
                 $resultPlace = Place::createFromArray(
                     json_decode(gzuncompress($placeFromDb[Constants::COMPRESSED_DATA]), true)
@@ -428,7 +416,17 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
         } else {
             $resultPlace = new Place(
                 $this->fetchAddressesForPlace($objectHash),
-                $this->fetchPolygonsForPlace($objectHash)
+                $this->fetchPolygonsForPlace($objectHash),
+                $placeFromDb[Constants::LOCALE],
+                $placeFromDb[Constants::POSTAL_CODE],
+                $placeFromDb[Constants::TIMEZONE],
+                $placeFromDb[Constants::PROVIDED_BY],
+                new Bounds(
+                    (float)$placeFromDb[Constants::BOUNDS_WEST],
+                    (float)$placeFromDb[Constants::BOUNDS_EAST],
+                    (float)$placeFromDb[Constants::BOUNDS_NORTH],
+                    (float)$placeFromDb[Constants::BOUNDS_SOUTH]
+                )
             );
             $resultPlace->setObjectHash($objectHash);
         }
@@ -490,8 +488,8 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
                 $pln = (int) $rawPolygon[Constants::POLYGON_NUMBER];
                 $pnn = (int) $rawPolygon[Constants::POINT_NUMBER];
                 $polygonPoints[$pln][$pnn] = new Coordinates(
-                    $rawPolygon[Constants::LATITUDE],
-                    $rawPolygon[Constants::LONGITUDE]
+                    (float)$rawPolygon[Constants::LONGITUDE],
+                    (float)$rawPolygon[Constants::LATITUDE]
                 );
             }
 

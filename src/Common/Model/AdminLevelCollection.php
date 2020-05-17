@@ -67,6 +67,15 @@ final class AdminLevelCollection implements \IteratorAggregate, \Countable, Arra
         return count($this->adminLevels);
     }
 
+    public function get(int $level): AdminLevel
+    {
+        if (!isset($this->adminLevels[$level])) {
+            throw new \OutOfBoundsException(sprintf('Admin level with %s level does not exist', $level));
+        }
+
+        return $this->adminLevels[$level];
+    }
+
     /**
      * @param AdminLevel $adminLevel
      */

@@ -54,7 +54,7 @@ class Place
      *
      * @var string
      */
-    private $currentLocale;
+    private $locale;
 
     /**
      * Unique id of Place object
@@ -90,7 +90,7 @@ class Place
         }
 
         $this->polygons = $polygons;
-        $this->currentLocale = $locale;
+        $this->locale = $locale;
         $this->postalCode = $postalCode;
         $this->timezone = $timezone;
         $this->providedBy = $providedBy;
@@ -104,7 +104,7 @@ class Place
      */
     public function getSelectedAddress(): Address
     {
-        return $this->addresses[$this->currentLocale];
+        return $this->addresses[$this->locale];
     }
 
     /**
@@ -116,7 +116,7 @@ class Place
      */
     public function setSelectedAddress(Address $address): bool
     {
-        $this->addresses[$this->currentLocale] = $address;
+        $this->addresses[$this->locale] = $address;
 
         return true;
     }
@@ -128,14 +128,14 @@ class Place
      */
     public function selectLocale(string $locale): bool
     {
-        $this->currentLocale = $locale;
+        $this->locale = $locale;
 
         return true;
     }
 
     public function getSelectedLocale(): string
     {
-        return $this->currentLocale;
+        return $this->locale;
     }
 
     /**
@@ -190,7 +190,7 @@ class Place
         foreach ($rawPolygons as $rawPolygon) {
             $tempPolygon = new Polygon();
             foreach ($rawPolygon as $coordinate) {
-                $tempPolygon->addCoordinates(new Coordinates($coordinate['lon'], $coordinate['lat']));
+                $tempPolygon->addCoordinates(new Coordinates((float)$coordinate['lon'], (float)$coordinate['lat']));
             }
             $this->polygons[] = $tempPolygon;
         }
@@ -346,5 +346,21 @@ class Place
     public function setProvidedBy(string $providedBy)
     {
         $this->providedBy = $providedBy;
+    }
+
+    /**
+     * @return Bounds|null
+     */
+    public function getBounds(): Bounds
+    {
+        return $this->bounds;
+    }
+
+    /**
+     * @param Bounds|null $bounds
+     */
+    public function setBounds(Bounds $bounds)
+    {
+        $this->bounds = $bounds;
     }
 }
