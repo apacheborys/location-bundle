@@ -15,7 +15,7 @@ namespace ApacheBorys\Location\Model;
 /**
  * @author Borys Yermokhin <borys_ermokhin@yahoo.com>
  */
-class Address
+class Address implements Arrayable
 {
     /**
      * @var string
@@ -124,5 +124,38 @@ class Address
     public function getCountry(): Country
     {
         return $this->country;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'locale' => $this->locale,
+            'adminLevels' => $this->adminLevels->toArray(),
+            'streetNumber' => $this->streetNumber,
+            'streetName' => $this->streetName,
+            'locality' => $this->locality,
+            'subLocality' => $this->subLocality,
+            'country' => $this->country->toArray(),
+        ];
+    }
+
+    public static function fromArray(array $raw): Arrayable
+    {
+        $properties = ['locale', 'adminLevels', 'streetNumber', 'streetName', 'locality', 'subLocality', 'country'];
+        foreach ($properties as $property) {
+            if (!isset($raw[$property])) {
+                throw new \InvalidArgumentException(sprintf('Key %s not found in input array', $property));
+            }
+        }
+
+        return new Address(
+            $raw['locale'],
+            AdminLevelCollection::fromArray($raw['adminLevels']),
+            $raw['streetNumber'],
+            $raw['streetName'],
+            $raw['locality'],
+            $raw['subLocality'],
+            Country::fromArray($raw['country'])
+        );
     }
 }

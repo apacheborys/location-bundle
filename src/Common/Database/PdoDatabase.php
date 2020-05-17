@@ -451,30 +451,18 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
 
         foreach ($stmtAddress->fetchAll() as $rawAddress) {
             $resultAddresses[$rawAddress[Constants::LOCALE]] = new Address(
-                $rawAddress[Constants::PROVIDED_BY],
+                $rawAddress[Constants::LOCALE],
                 new AdminLevelCollection(
                     $this->fetchAdminLevelsForAddress(
                         $objectHash,
                         $rawAddress[Constants::LOCALE]
                     )
                 ),
-                new Coordinates(
-                    $rawAddress[Constants::COORDINATE_LATITUDE],
-                    $rawAddress[Constants::COORDINATE_LONGITUDE]
-                ),
-                new Bounds(
-                    $rawAddress[Constants::BOUNDS_SOUTH],
-                    $rawAddress[Constants::BOUNDS_WEST],
-                    $rawAddress[Constants::BOUNDS_NORTH],
-                    $rawAddress[Constants::BOUNDS_EAST]
-                ),
                 $rawAddress[Constants::STREET_NUMBER],
                 $rawAddress[Constants::STREET_NAME],
-                $rawAddress[Constants::POSTAL_CODE],
                 $rawAddress[Constants::LOCALITY],
                 $rawAddress[Constants::SUB_LOCALITY],
-                new Country($rawAddress[Constants::COUNTY_NAME], $rawAddress[Constants::COUNTRY_CODE]),
-                $rawAddress[Constants::TIMEZONE]
+                new Country($rawAddress[Constants::COUNTRY_NAME], $rawAddress[Constants::COUNTRY_CODE])
             );
         }
 
@@ -535,8 +523,7 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
         foreach ($stmtAdminLevel->fetchAll() as $rawLevel) {
             $levels[] = new AdminLevel(
                 (int) $rawLevel[Constants::LEVEL],
-                $rawLevel[Constants::NAME],
-                $rawLevel[Constants::CODE]
+                $rawLevel[Constants::NAME]
             );
         }
 

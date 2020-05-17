@@ -15,7 +15,7 @@ namespace ApacheBorys\Location\Model;
 /**
  * @author Borys Yermokhin <borys_ermokhin@yahoo.com>
  */
-final class AdminLevelCollection implements \IteratorAggregate, \Countable
+final class AdminLevelCollection implements \IteratorAggregate, \Countable, Arrayable
 {
     /**
      * @var AdminLevel[]
@@ -94,5 +94,25 @@ final class AdminLevelCollection implements \IteratorAggregate, \Countable
     public function all(): array
     {
         return $this->adminLevels;
+    }
+
+    public function toArray(): array
+    {
+        $result = [];
+        foreach ($this->all() as $adminLevel) {
+            $result[$adminLevel->getLevel()] = $adminLevel->toArray();
+        }
+
+        return $result;
+    }
+
+    public static function fromArray(array $raw): Arrayable
+    {
+        $adminLevels = [];
+        foreach ($raw as $rawLevel) {
+            $adminLevels[] = AdminLevel::fromArray($rawLevel);
+        }
+
+        return new AdminLevelCollection($adminLevels);
     }
 }

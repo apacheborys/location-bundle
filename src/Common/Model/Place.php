@@ -67,11 +67,19 @@ class Place
      * @param Address|Address[] $address
      * @param Polygon[]|null    $polygons
      * @param string            $locale
+     * @param string|null       $postalCode
+     * @param string|null       $timezone
+     * @param string            $providedBy
+     * @param string|null       $bounds
      */
     public function __construct(
         $address,
         array $polygons = null,
-        string $locale = self::DEFAULT_LOCALE
+        string $locale = self::DEFAULT_LOCALE,
+        string $postalCode = null,
+        string $timezone = null,
+        string $providedBy = '',
+        Bounds $bounds = null
     ) {
         if (is_array($address)) {
             foreach ($address as $localeNode => $addressNode) {
@@ -83,6 +91,10 @@ class Place
 
         $this->polygons = $polygons;
         $this->currentLocale = $locale;
+        $this->postalCode = $postalCode;
+        $this->timezone = $timezone;
+        $this->providedBy = $providedBy;
+        $this->bounds = $bounds;
     }
 
     /**
@@ -214,7 +226,7 @@ class Place
      *
      * @return Place
      */
-    public static function createFromArray(array $data, array $includeLocales = [])
+    public static function createFromArray(array $data, array $includeLocales = []): Place
     {
         $addresses = [];
         $firstLocale = '';
@@ -228,11 +240,19 @@ class Place
                     $firstLocale = $locale;
                 }
 
-                $addresses[$locale] = Address::createFromArray($rawAddress);
+                $addresses[$locale] = Address::fromArray($rawAddress);
             }
         }
 
-        $place = new self($addresses, null, $firstLocale);
+        $place = new self(
+            $addresses,
+            null,
+            $firstLocale,
+            $data['postalCode'],
+            $data['timezone'],
+            $data['providedBy'],
+            Bounds::fromArray($data['bounds'])
+        );
 
         if (isset($data['polygons'])) {
             $place->setPolygonsFromArray($data['polygons']);

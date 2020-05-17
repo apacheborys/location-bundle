@@ -30,6 +30,13 @@ final class SqliteHelper implements HelperInterface
             'CREATE TABLE IF NOT EXISTS "'.$this->prefix.'place" (
 	"'.Constants::OBJECT_HASH.'"	TEXT NOT NULL UNIQUE,
 	"'.Constants::COMPRESSED_DATA.'"	BLOB,
+	"'.Constants::PROVIDED_BY.'"	TEXT,
+	"'.Constants::BOUNDS_SOUTH.'"	REAL,
+	"'.Constants::BOUNDS_WEST.'"	REAL,
+	"'.Constants::BOUNDS_NORTH.'"	REAL,
+	"'.Constants::BOUNDS_EAST.'"	REAL,
+	"'.Constants::POSTAL_CODE.'"	TEXT,
+	"'.Constants::TIMEZONE.'"	TEXT,
 	PRIMARY KEY("'.Constants::OBJECT_HASH.'")
 )',
             'CREATE TABLE IF NOT EXISTS "'.$this->prefix.'actual_keys" (
@@ -41,21 +48,12 @@ final class SqliteHelper implements HelperInterface
             'CREATE TABLE IF NOT EXISTS "'.$this->prefix.'address" (
 	"'.Constants::OBJECT_HASH.'"	TEXT,
 	"'.Constants::LOCALE.'"	TEXT,
-	"'.Constants::PROVIDED_BY.'"	TEXT,
-	"'.Constants::COORDINATE_LATITUDE.'"	REAL,
-	"'.Constants::COORDINATE_LONGITUDE.'"	REAL,
-	"'.Constants::BOUNDS_SOUTH.'"	REAL,
-	"'.Constants::BOUNDS_WEST.'"	REAL,
-	"'.Constants::BOUNDS_NORTH.'"	REAL,
-	"'.Constants::BOUNDS_EAST.'"	REAL,
 	"'.Constants::STREET_NUMBER.'"	TEXT,
 	"'.Constants::STREET_NAME.'"	TEXT,
-	"'.Constants::POSTAL_CODE.'"	TEXT,
 	"'.Constants::LOCALITY.'"	TEXT,
 	"'.Constants::SUB_LOCALITY.'"	TEXT,
 	"'.Constants::COUNTRY_CODE.'"	TEXT,
-	"'.Constants::COUNTY_NAME.'"	TEXT,
-	"'.Constants::TIMEZONE.'"	TEXT,
+	"'.Constants::COUNTRY_NAME.'"	TEXT,
 	FOREIGN KEY("'.Constants::OBJECT_HASH.'") REFERENCES "'.$this->prefix.'place"("'.Constants::OBJECT_HASH.'")
 )',
             'CREATE TABLE IF NOT EXISTS "'.$this->prefix.'admin_level" (
@@ -63,7 +61,6 @@ final class SqliteHelper implements HelperInterface
 	"'.Constants::LOCALE.'"	TEXT,
 	"'.Constants::LEVEL.'"	INTEGER,
 	"'.Constants::NAME.'"	TEXT,
-	"'.Constants::CODE.'"	TEXT,
 	FOREIGN KEY("'.Constants::OBJECT_HASH.'") REFERENCES "'.$this->prefix.'place"("'.Constants::OBJECT_HASH.'")
 )',
             'CREATE TABLE IF NOT EXISTS "'.$this->prefix.'polygon" (

@@ -119,7 +119,6 @@ abstract class AbstractDatabase
                 $this->dbConfig->getPrefixLevel(),
                 $level->getLevel(),
                 $this->normalizeStringForKeyName($level->getName()),
-                $this->normalizeStringForKeyName((string) $level->getCode()),
             ]);
 
             if (!isset($this->existAdminLevels[$level->getLevel()])) {
@@ -145,7 +144,6 @@ abstract class AbstractDatabase
     {
         return [
             $this->normalizeStringForKeyName($address->getCountry()->getCode()),
-            $this->normalizeStringForKeyName($address->getPostalCode()),
             $this->normalizeStringForKeyName($address->getLocality()),
             $this->normalizeStringForKeyName($address->getSubLocality()),
             $this->normalizeStringForKeyName($address->getStreetName()),

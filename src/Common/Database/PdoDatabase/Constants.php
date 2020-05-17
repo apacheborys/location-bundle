@@ -56,7 +56,7 @@ final class Constants
 
     const COUNTRY_CODE = 'country_code';
 
-    const COUNTY_NAME = 'country_name';
+    const COUNTRY_NAME = 'country_name';
 
     const TIMEZONE = 'timezone';
 
@@ -97,7 +97,7 @@ final class Constants
         self::LOCALITY => Address::class.'::locality',
         self::SUB_LOCALITY => Address::class.'::subLocality',
         self::COUNTRY_CODE => Country::class.'::code',
-        self::COUNTY_NAME => Country::class.'::name',
+        self::COUNTRY_NAME => Country::class.'::name',
         self::TIMEZONE => Address::class.'::timezone',
     ];
 
