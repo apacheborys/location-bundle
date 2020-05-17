@@ -10,6 +10,15 @@
         {
             "type": "Feature",
             "properties": {
+                "common": {
+                    "postcode": "",
+                    "bbox": [
+                        6.6888145,
+                        51.1243747,
+                        6.9398848,
+                        51.3525324
+                    ]
+                },
                 "en": {
                     "geocoding": {
                         "place_id": 235355189,
@@ -30,17 +39,7 @@
                             "level1": "North Rhine-Westphalia",
                             "level2": "Düsseldorf"
                         }
-                    },
-                    "coordinates": [
-                        6.6888145,
-                        51.2294954
-                    ],
-                    "bbox": [
-                        6.6888145,
-                        51.1243747,
-                        6.9398848,
-                        51.3525324
-                    ]
+                    }
                 },
                 "de": {
                     "geocoding": {
@@ -62,17 +61,7 @@
                             "level1": "North Rhine-Westphalia",
                             "level2": "Düsseldorf"
                         }
-                    },
-                    "coordinates": [
-                        6.6888145,
-                        51.2294954
-                    ],
-                    "bbox": [
-                        6.6888145,
-                        51.1243747,
-                        6.9398848,
-                        51.3525324
-                    ]
+                    }
                 }
             },
             "geometry": {

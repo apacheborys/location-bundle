@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace ApacheBorys\Location\Tests\Database;
 
-use Cache\Adapter\PHPArray\ArrayCachePool;
 use ApacheBorys\Location\Database\Psr6Database;
 use ApacheBorys\Location\Model\DBConfig;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 /**
  * @author Borys Yermokhin <borys_ermokhin@yahoo.com>
@@ -28,7 +28,9 @@ class Psr6DataBaseCompressTest extends StorageLocationProviderIntegrationDbTest
         $dbConfig = new DBConfig();
         $dbConfig->setUseCompression(true);
         $dbConfig->setCompressionLevel(1);
+        $cache = new FilesystemAdapter();
+        $cache->clear();
 
-        $this->dataBase = new Psr6Database(new ArrayCachePool(), $dbConfig);
+        $this->dataBase = new Psr6Database($cache, $dbConfig);
     }
 }

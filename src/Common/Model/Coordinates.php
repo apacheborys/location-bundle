@@ -39,6 +39,9 @@ class Coordinates implements Arrayable
         if (!self::assertLatitude($latitude)) {
             throw new \InvalidArgumentException('Wrong latitude argument');
         }
+
+        $this->longitude = $longitude;
+        $this->latitude = $latitude;
     }
 
     /**

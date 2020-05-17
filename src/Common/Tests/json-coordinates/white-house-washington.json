@@ -10,6 +10,15 @@
         {
             "type":"Feature",
             "properties":{
+                "common": {
+                    "postcode": "20500",
+                    "bbox": [
+                        -77.0368542,
+                        38.8974898,
+                        -77.0362526,
+                        38.897911
+                    ]
+                },
                 "en": {
                     "geocoding":{
                         "place_id":145015996,
@@ -31,17 +40,7 @@
                             "level2":"Washington",
                             "level3":"Washington D.C."
                         }
-                    },
-                    "coordinates": [
-                        -77.0368542,
-                        38.8977036
-                    ],
-                    "bbox":[
-                        -77.0368542,
-                        38.8974898,
-                        -77.0362526,
-                        38.897911
-                    ]
+                    }
                 }
             },
             "geometry":{

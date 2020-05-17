@@ -10,6 +10,15 @@
         {
             "type":"Feature",
             "properties":{
+                "common": {
+                    "postcode": "SW1A 2AA",
+                    "bbox": [
+                        -0.1278356,
+                        51.5032573,
+                        -0.1273038,
+                        51.5036483
+                    ]
+                },
                 "en": {
                     "geocoding":{
                         "place_id":235609307,
@@ -32,17 +41,7 @@
                             "level3":"London",
                             "level4":"City of Westminster"
                         }
-                    },
-                    "coordinates": [
-                        -0.1278356,
-                        51.5034646
-                    ],
-                    "bbox":[
-                        -0.1278356,
-                        51.5032573,
-                        -0.1273038,
-                        51.5036483
-                    ]
+                    }
                 }
             },
             "geometry":{

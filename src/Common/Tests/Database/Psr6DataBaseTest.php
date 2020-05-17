@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace ApacheBorys\Location\Tests\Database;
 
-use Cache\Adapter\PHPArray\ArrayCachePool;
 use ApacheBorys\Location\Database\Psr6Database;
 use ApacheBorys\Location\Model\DBConfig;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 /**
  * @author Borys Yermokhin <borys_ermokhin@yahoo.com>
@@ -24,6 +24,6 @@ class Psr6DataBaseTest extends StorageLocationProviderIntegrationDbTest
     public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
-        $this->dataBase = new Psr6Database(new ArrayCachePool(), new DBConfig());
+        $this->dataBase = new Psr6Database(new FilesystemAdapter(), new DBConfig());
     }
 }

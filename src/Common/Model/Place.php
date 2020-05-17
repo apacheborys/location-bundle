@@ -70,7 +70,7 @@ class Place
      * @param string|null       $postalCode
      * @param string|null       $timezone
      * @param string            $providedBy
-     * @param string|null       $bounds
+     * @param Bounds            $bounds
      */
     public function __construct(
         $address,
@@ -190,9 +190,7 @@ class Place
         foreach ($rawPolygons as $rawPolygon) {
             $tempPolygon = new Polygon();
             foreach ($rawPolygon as $coordinate) {
-                if (isset($coordinate[1]) && isset($coordinate[0])) {
-                    $tempPolygon->addCoordinates(new Coordinates($coordinate[1], $coordinate[0]));
-                }
+                $tempPolygon->addCoordinates(new Coordinates($coordinate['lon'], $coordinate['lat']));
             }
             $this->polygons[] = $tempPolygon;
         }
@@ -294,7 +292,59 @@ class Place
 
         $result['polygons'] = $this->getPolygonsAsArray();
         $result['hash'] = $this->objectHash;
+        $result['postalCode'] = $this->postalCode;
+        $result['providedBy'] = $this->providedBy;
+        $result['bounds'] = $this->bounds->toArray();
+        $result['timezone'] = $this->timezone;
 
         return $result;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPostalCode(): string
+    {
+        return $this->postalCode;
+    }
+
+    /**
+     * @param string|null $postalCode
+     */
+    public function setPostalCode(string $postalCode)
+    {
+        $this->postalCode = $postalCode;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTimezone(): string
+    {
+        return $this->timezone;
+    }
+
+    /**
+     * @param string|null $timezone
+     */
+    public function setTimezone(string $timezone)
+    {
+        $this->timezone = $timezone;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProvidedBy(): string
+    {
+        return $this->providedBy;
+    }
+
+    /**
+     * @param string $providedBy
+     */
+    public function setProvidedBy(string $providedBy)
+    {
+        $this->providedBy = $providedBy;
     }
 }

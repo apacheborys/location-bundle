@@ -10,6 +10,15 @@
         {
             "type": "Feature",
             "properties": {
+                "common": {
+                    "postcode": "40545",
+                    "bbox": [
+                        6.747149,
+                        51.2312885,
+                        6.7476454,
+                        51.2316324
+                    ]
+                },
                 "en": {
                     "geocoding": {
                         "place_id": 236468112,
@@ -34,17 +43,7 @@
                             "level4": "Stadtbezirk 4",
                             "level3": "Oberkassel"
                         }
-                    },
-                    "coordinates": [
-                        6.747149,
-                        51.2316237
-                    ],
-                    "bbox": [
-                        6.747149,
-                        51.2312885,
-                        6.7476454,
-                        51.2316324
-                    ]
+                    }
                 },
                 "de": {
                     "geocoding": {
@@ -70,17 +69,7 @@
                             "level4": "Stadtbezirk 4",
                             "level3": "Oberkassel"
                         }
-                    },
-                    "coordinates": [
-                        6.747149,
-                        51.2316237
-                    ],
-                    "bbox": [
-                        6.747149,
-                        51.2312885,
-                        6.7476454,
-                        51.2316324
-                    ]
+                    }
                 }
             },
             "geometry": {

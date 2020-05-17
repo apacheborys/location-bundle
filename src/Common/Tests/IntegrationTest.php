@@ -12,9 +12,6 @@ declare(strict_types=1);
 
 namespace ApacheBorys\Location\Tests;
 
-use Cache\Adapter\PHPArray\ArrayCachePool;
-use ApacheBorys\Location\IntegrationTest\CachedResponseClient;
-use ApacheBorys\Location\IntegrationTest\ProviderIntegrationTest;
 use ApacheBorys\Location\Model\Address;
 use ApacheBorys\Location\Model\AdminLevel;
 use ApacheBorys\Location\Model\AdminLevelCollection;
@@ -28,13 +25,13 @@ use ApacheBorys\Location\Model\Polygon;
 use ApacheBorys\Location\Location;
 use ApacheBorys\Location\Query\GeocodeQuery;
 use ApacheBorys\Location\Query\ReverseQuery;
-use Http\Client\HttpClient;
-use Http\Discovery\HttpClientDiscovery;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 /**
  * @author Borys Yermokhin <borys_ermokhin@yahoo.com>
  */
-class IntegrationTest extends ProviderIntegrationTest
+class IntegrationTest extends TestCase
 {
     const ELEM_LATITUDE = 'latitude';
 
@@ -52,24 +49,18 @@ class IntegrationTest extends ProviderIntegrationTest
 
     const ELEM_POSTAL_CODE = 'postalCode';
 
-    protected $testIpv4 = false;
-
-    protected $testIpv6 = false;
-
-    protected $testHttpProvider = false;
-
     private $countCoordFiles = 0;
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function createProvider(HttpClient $httpClient)
-    {
-        $dataBase = new Psr6Database(new ArrayCachePool(), new DBConfig());
-        $provider = new Location($dataBase);
-        $this->loadJsonCoordinates($provider);
+    /** @var Location */
+    private $location;
 
-        return $provider;
+    public function __construct()
+    {
+        parent::__construct();
+
+        $dataBase = new Psr6Database(new FilesystemAdapter(), new DBConfig());
+        $this->location = new Location($dataBase);
+        $this->loadJsonCoordinates($this->location);
     }
 
     /**
@@ -80,35 +71,27 @@ class IntegrationTest extends ProviderIntegrationTest
      * @param float $lat
      * @param float $lon
      * @param array $expected
-     *
-     * @throws \Geocoder\Exception\Exception
      */
     public function testNestedPolygons(float $lat, float $lon, array $expected)
     {
-        /** @var Location $provider */
-        $provider = $this->createProvider($this->getCachedHttpClient());
-
-        $result = $provider->reverseQuery(ReverseQuery::fromCoordinates($lat, $lon)->withLocale('en'));
-        $address = $result->first();
+        $result = $this->location->reverseQuery(new ReverseQuery(new Coordinates($lon, $lat), 0, 'en'));
+        /** @var Address $address */
+        $address = $result->getIterator()->first();
 
         $this->assertEquals($expected[self::ELEM_STREET_NUMBER], $address->getStreetNumber());
         $this->assertEquals($expected[self::ELEM_STREET_NUMBER], $address->getStreetNumber());
         $this->assertEquals($expected[self::ELEM_SUB_LOCALITY], $address->getSubLocality());
         $this->assertEquals($expected[self::ELEM_LOCALITY], $address->getLocality());
-        $this->assertEquals($expected[self::ELEM_POSTAL_CODE], $address->getPostalCode());
     }
 
     /**
-     * @covers \Geocoder\Provider\StorageLocation\StorageLocation::getAllPlaces
+     * @covers \ApacheBorys\Location\Location::getAllPlaces
      */
     public function testGetAllPlaces()
     {
-        /** @var Location $provider */
-        $provider = $this->createProvider($this->getCachedHttpClient());
-
         $totalCount = 0;
         $page = 0;
-        while ($places = $provider->getAllPlaces($page * 50)) {
+        while ($places = $this->location->getAllPlaces($page * 50)) {
             foreach ($places as $place) {
                 $this->assertEquals(Place::class, get_class($place));
                 ++$totalCount;
@@ -119,20 +102,17 @@ class IntegrationTest extends ProviderIntegrationTest
     }
 
     /**
-     * @covers \Geocoder\Provider\StorageLocation\StorageLocation::deletePlace
+     * @covers \ApacheBorys\Location\Location::deletePlace
      */
     public function testDeletePlace()
     {
-        /** @var Location $provider */
-        $provider = $this->createProvider($this->getCachedHttpClient());
-
-        $places = \SplFixedArray::fromArray($provider->getAllPlaces());
+        $places = \SplFixedArray::fromArray($this->location->getAllPlaces());
         $places->rewind();
-        $provider->deletePlace($places->current());
+        $this->location->deletePlace($places->current());
 
         $totalCount = 0;
         $page = 0;
-        while ($places = $provider->getAllPlaces($page * 50)) {
+        while ($places = $this->location->getAllPlaces($page * 50)) {
             $totalCount += count($places);
             ++$page;
         }
@@ -141,25 +121,20 @@ class IntegrationTest extends ProviderIntegrationTest
 
     /**
      * Additional geocodeQuery with specific locale
-     *
-     * @throws \Geocoder\Exception\Exception
      */
     public function testGeocodeQueryWithLocale()
     {
-        $provider = $this->createProvider($this->getCachedHttpClient());
-        $query = GeocodeQuery::create('Oberkassel, Düsseldorf')->withLocale('de');
-        $result = $provider->geocodeQuery($query);
+        $query = new GeocodeQuery('Oberkassel, Düsseldorf', 0, 'de');
+        $result = $this->location->geocodeQuery($query);
 
         // Check Dusseldorf assets in german language
-        $this->checkDusseldorfAssetsInGermanLang($result->first());
+        $this->checkDusseldorfAssetsInGermanLang($result->getIterator()->first());
     }
 
     public function testReverseQueryWithLocale()
     {
-        $provider = $this->createProvider($this->getCachedHttpClient());
-
         // Close to the white house
-        $result = $provider->reverseQuery(ReverseQuery::fromCoordinates(51.231426, 6.761729)->withLocale('de'));
+        $result = $this->location->reverseQuery(new ReverseQuery(new Coordinates(51.231426, 6.761729),0, 'de'));
 
         // Check Dusseldorf assets in german language
         $this->checkDusseldorfAssetsInGermanLang($result->first());
@@ -218,48 +193,12 @@ class IntegrationTest extends ProviderIntegrationTest
 
     private function checkDusseldorfAssetsInGermanLang(Location $location)
     {
-        $this->assertEquals(51.2343, $location->getCoordinates()->getLatitude(), 'Latitude should be in Dusseldorf', 0.1);
-        $this->assertEquals(6.73134, $location->getCoordinates()->getLongitude(), 'Longitude should be in Dusseldorf', 0.1);
+        // TODO should be realized assertation through Place entity
+        // $this->assertEquals(51.2343, $location->getCoordinates()->getLatitude(), 'Latitude should be in Dusseldorf', 0.1);
+        // $this->assertEquals(6.73134, $location->getCoordinates()->getLongitude(), 'Longitude should be in Dusseldorf', 0.1);
         $this->assertEquals('Düsseldorf', $location->getSubLocality());
         $this->assertEquals('Nordrhein-Westfalen', $location->getLocality());
         $this->assertEquals('Deutschland', $location->getCountry()->getName());
-    }
-
-    /**
-     * This client will make real request if cache was not found.
-     *
-     * @return CachedResponseClient
-     */
-    private function getCachedHttpClient()
-    {
-        try {
-            $client = HttpClientDiscovery::find();
-        } catch (\Http\Discovery\NotFoundException $e) {
-            $client = $this->getMockForAbstractClass(HttpClient::class);
-
-            $client
-                ->expects($this->any())
-                ->method('sendRequest')
-                ->willThrowException($e);
-        }
-
-        return new CachedResponseClient($client, $this->getCacheDir(), $this->getApiKey());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getCacheDir()
-    {
-        return __DIR__ . '/.cached_responses';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getApiKey()
-    {
-        return '';
     }
 
     private function loadJsonCoordinates(Location $provider): bool
@@ -298,38 +237,41 @@ class IntegrationTest extends ProviderIntegrationTest
 
         $addresses = [];
         foreach ($root['properties'] as $locale => $rawAddress) {
-            $addresses[$locale] = $this->mapRawDataToAddress($rawAddress);
+            $addresses[$locale] = $this->mapRawDataToAddress($rawAddress, $locale);
         }
 
-        return new Place($addresses, $polygons);
+        return new Place(
+            $addresses,
+            $polygons,
+            Place::DEFAULT_LOCALE,
+            $root['properties']['common']['postcode'],
+            null,
+            $rawData['geocoding']['attribution'],
+            new Bounds(
+                $root['properties']['common']['bbox'][0],
+                $root['properties']['common']['bbox'][1],
+                $root['properties']['common']['bbox'][2],
+                $root['properties']['common']['bbox'][3]
+            )
+        );
     }
 
-    private function mapRawDataToAddress(array $rawData): Address
+    private function mapRawDataToAddress(array $rawData, string $locale): Address
     {
         $adminLevels = [];
         foreach ($rawData['geocoding']['admin'] as $adminLevel => $name) {
             $level = (int) substr($adminLevel, 5);
-            if ($level > 5) {
-                $level = 5;
-            } elseif ($level < 1) {
-                $level = 1;
-            }
-
             $adminLevels[$level] = new AdminLevel($level, $name);
         }
 
         return new Address(
-            $rawData['geocoding']['attribution'],
+            $locale,
             new AdminLevelCollection($adminLevels),
-            new Coordinates($rawData['coordinates'][1], $rawData['coordinates'][0]),
-            new Bounds($rawData['bbox'][0], $rawData['bbox'][1], $rawData['bbox'][2], $rawData['bbox'][3]),
             $rawData['geocoding']['housenumber'] ?? '',
             $rawData['geocoding']['street'] ?? '',
-            $rawData['geocoding']['postcode'] ?? '',
             $rawData['geocoding']['state'] ?? '',
             $rawData['geocoding']['city'] ?? '',
-            new Country($rawData['geocoding']['country'], $rawData['geocoding']['country_code']),
-            null
+            new Country($rawData['geocoding']['country'], $rawData['geocoding']['country_code'])
         );
     }
 }

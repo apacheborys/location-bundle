@@ -11,6 +11,15 @@
         {
             "type": "Feature",
             "properties": {
+                "common": {
+                    "postcode": "40545",
+                    "bbox": [
+                        6.7313494,
+                        51.2198095,
+                        6.7686593,
+                        51.236196
+                    ]
+                },
                 "en": {
                     "geocoding": {
                         "place_id": 235690139,
@@ -33,17 +42,7 @@
                             "level2": "Düsseldorf",
                             "level3": "Oberkassel"
                         }
-                    },
-                    "coordinates": [
-                        6.7313494,
-                        51.2343655
-                    ],
-                    "bbox": [
-                        6.7313494,
-                        51.2198095,
-                        6.7686593,
-                        51.236196
-                    ]
+                    }
                 },
                 "de": {
                     "geocoding": {
@@ -67,17 +66,7 @@
                             "level2": "Düsseldorf",
                             "level3": "Oberkassel"
                         }
-                    },
-                    "coordinates": [
-                        6.7313494,
-                        51.2343655
-                    ],
-                    "bbox": [
-                        6.7313494,
-                        51.2198095,
-                        6.7686593,
-                        51.236196
-                    ]
+                    }
                 }
             },
             "geometry": {

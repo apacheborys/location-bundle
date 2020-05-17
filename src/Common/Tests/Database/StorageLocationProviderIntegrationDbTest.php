@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace ApacheBorys\Location\Tests\Database;
 
-use ApacheBorys\Location\Model\Address;
 use ApacheBorys\Location\Database\DataBaseInterface;
 use ApacheBorys\Location\Model\Place;
 use PHPUnit\Framework\TestCase;
@@ -28,7 +27,7 @@ abstract class StorageLocationProviderIntegrationDbTest extends TestCase
     public function testAdd()
     {
         $origPlace = Place::createFromArray(json_decode(
-            file_get_contents(__DIR__ . DIRECTORY_SEPARATOR),
+            file_get_contents(__DIR__.DIRECTORY_SEPARATOR.'places'.DIRECTORY_SEPARATOR.'add.place'),
             true
         ));
 
@@ -42,7 +41,7 @@ abstract class StorageLocationProviderIntegrationDbTest extends TestCase
     public function testUpdate()
     {
         $origPlace = json_decode(
-            file_get_contents(__DIR__ . DIRECTORY_SEPARATOR),
+            file_get_contents(__DIR__.DIRECTORY_SEPARATOR.'places'.DIRECTORY_SEPARATOR.'update.place'),
             true
         );
         $placeObj = Place::createFromArray($origPlace);
@@ -53,10 +52,7 @@ abstract class StorageLocationProviderIntegrationDbTest extends TestCase
             array_values($this->dataBase->get($this->dataBase->compileKey($placeObj->getSelectedAddress())))
         );
 
-        $placeObj->setSelectedAddress(Address::createFromArray(array_merge(
-            $origPlace['address']['en'],
-            ['timezone' => 'Control time zone']
-        )));
+        $placeObj->setTimezone('test');
         $this->dataBase->update($placeObj);
         $this->assertEquals(
             [$placeObj],
@@ -67,7 +63,7 @@ abstract class StorageLocationProviderIntegrationDbTest extends TestCase
     public function testDelete()
     {
         $origPlace = Place::createFromArray(json_decode(
-            file_get_contents(__DIR__ . DIRECTORY_SEPARATOR),
+            file_get_contents(__DIR__.DIRECTORY_SEPARATOR.'places'.DIRECTORY_SEPARATOR.'delete.place'),
             true
         ));
         $this->dataBase->add($origPlace);
@@ -83,7 +79,7 @@ abstract class StorageLocationProviderIntegrationDbTest extends TestCase
     public function testGetAllPlaces()
     {
         $origPlace = Place::createFromArray(json_decode(
-            file_get_contents(__DIR__ . DIRECTORY_SEPARATOR),
+            file_get_contents(__DIR__.DIRECTORY_SEPARATOR.'places'.DIRECTORY_SEPARATOR.'add.place'),
             true
         ));
         $this->dataBase->add($origPlace);
@@ -100,7 +96,7 @@ abstract class StorageLocationProviderIntegrationDbTest extends TestCase
     public function testGetAdminLevels()
     {
         $origPlace = Place::createFromArray(json_decode(
-            file_get_contents(__DIR__ . DIRECTORY_SEPARATOR),
+            file_get_contents(__DIR__.DIRECTORY_SEPARATOR.'places'.DIRECTORY_SEPARATOR.'add.place'),
             true
         ));
         $this->dataBase->add($origPlace);
