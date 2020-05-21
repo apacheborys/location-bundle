@@ -54,11 +54,12 @@ class IntegrationTest extends TestCase
     /** @var Location */
     private $location;
 
-    public function __construct()
+    public function setUp()
     {
-        parent::__construct();
+        $cache = new FilesystemAdapter();
+        $cache->clear();
 
-        $dataBase = new Psr6Database(new FilesystemAdapter(), new DBConfig());
+        $dataBase = new Psr6Database($cache, new DBConfig());
         $this->location = new Location($dataBase);
         $this->loadJsonCoordinates($this->location);
     }
@@ -76,7 +77,7 @@ class IntegrationTest extends TestCase
     {
         $result = $this->location->reverseQuery(new ReverseQuery(new Coordinates($lon, $lat), 0, 'en'));
         /** @var Address $address */
-        $address = $result->getIterator()->first();
+        $address = \SplFixedArray::fromArray($result->all())->current();
 
         $this->assertEquals($expected[self::ELEM_STREET_NUMBER], $address->getStreetNumber());
         $this->assertEquals($expected[self::ELEM_STREET_NUMBER], $address->getStreetNumber());
@@ -128,16 +129,16 @@ class IntegrationTest extends TestCase
         $result = $this->location->geocodeQuery($query);
 
         // Check Dusseldorf assets in german language
-        $this->checkDusseldorfAssetsInGermanLang($result->getIterator()->first());
+        $this->checkDusseldorfAssetsInGermanLang(current($result->all()));
     }
 
     public function testReverseQueryWithLocale()
     {
-        // Close to the white house
-        $result = $this->location->reverseQuery(new ReverseQuery(new Coordinates(51.231426, 6.761729),0, 'de'));
+        // Somewhere in Dusseldorf
+        $result = $this->location->reverseQuery(new ReverseQuery(new Coordinates(6.761729,51.231426),0, 'de'));
 
         // Check Dusseldorf assets in german language
-        $this->checkDusseldorfAssetsInGermanLang($result->first());
+        $this->checkDusseldorfAssetsInGermanLang(current($result->all()));
     }
 
     /**
@@ -191,25 +192,26 @@ class IntegrationTest extends TestCase
         ];
     }
 
-    private function checkDusseldorfAssetsInGermanLang(Location $location)
+    private function checkDusseldorfAssetsInGermanLang(Address $address)
     {
         // TODO should be realized assertation through Place entity
         // $this->assertEquals(51.2343, $location->getCoordinates()->getLatitude(), 'Latitude should be in Dusseldorf', 0.1);
         // $this->assertEquals(6.73134, $location->getCoordinates()->getLongitude(), 'Longitude should be in Dusseldorf', 0.1);
-        $this->assertEquals('Düsseldorf', $location->getSubLocality());
-        $this->assertEquals('Nordrhein-Westfalen', $location->getLocality());
-        $this->assertEquals('Deutschland', $location->getCountry()->getName());
+        $this->assertEquals('Düsseldorf', $address->getSubLocality());
+        $this->assertEquals('Nordrhein-Westfalen', $address->getLocality());
+        $this->assertEquals('Deutschland', $address->getCountry()->getName());
     }
 
     private function loadJsonCoordinates(Location $provider): bool
     {
         $success = true;
-        $dirPath = __DIR__ . DIRECTORY_SEPARATOR .DIRECTORY_SEPARATOR;
+        $dirPath = __DIR__ . DIRECTORY_SEPARATOR.'json-coordinates'.DIRECTORY_SEPARATOR;
 
         foreach (scandir($dirPath) as $file) {
-            if (!is_file($dirPath.$file)) {
+            if (!is_file($dirPath.$file) || substr($file, -5) !== '.json') {
                 continue;
             }
+
             $rawData = json_decode(file_get_contents($dirPath.$file), true);
             if (is_array($rawData)) {
                 $provider->addPlace($this->mapRawDataToPlace($rawData));
@@ -230,13 +232,16 @@ class IntegrationTest extends TestCase
         foreach ($root['geometry']['coordinates'] as $rawPolygon) {
             $tempPolygon = new Polygon();
             foreach ($rawPolygon as $coordinates) {
-                $tempPolygon->addCoordinates(new Coordinates($coordinates[1], $coordinates[0]));
+                $tempPolygon->addCoordinates(new Coordinates($coordinates[0], $coordinates[1]));
             }
             $polygons[] = $tempPolygon;
         }
 
         $addresses = [];
         foreach ($root['properties'] as $locale => $rawAddress) {
+            if ($locale === 'common') {
+                continue;
+            }
             $addresses[$locale] = $this->mapRawDataToAddress($rawAddress, $locale);
         }
 

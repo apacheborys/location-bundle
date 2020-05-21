@@ -223,11 +223,14 @@ abstract class AbstractDatabase
      */
     protected function evaluateHitPhrase(string $phrase, string $original): int
     {
+        $prefix = implode($this->dbConfig->getGlueForSections(), $this->dbConfig->getGlobalPrefix());
+
         $phrase = rawurldecode($phrase);
-        $original = substr($original, strlen(implode(
-            $this->dbConfig->getGlueForSections(),
-            $this->dbConfig->getGlobalPrefix()
-        )) + 1);
+        if (0 === strpos($phrase, $prefix)) {
+            $phrase = substr($phrase, strlen($prefix) + 1);
+        }
+
+        $original = substr($original, strlen($prefix) + 1);
 
         $result = 0;
         foreach ([',', ' ', '.'] as $delimiter) {
