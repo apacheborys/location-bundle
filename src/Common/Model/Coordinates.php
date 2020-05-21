@@ -76,6 +76,6 @@ class Coordinates implements Arrayable
             }
         }
 
-        return new self((float)$raw['lon'], (float)$raw['lat']);
+        return new self((float) $raw['lon'], (float) $raw['lat']);
     }
 }

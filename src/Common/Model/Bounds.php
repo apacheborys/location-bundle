@@ -112,6 +112,6 @@ class Bounds implements Arrayable
             }
         }
 
-        return new self((float)$raw['west'], (float)$raw['east'], (float)$raw['north'], (float)$raw['south']);
+        return new self((float) $raw['west'], (float) $raw['east'], (float) $raw['north'], (float) $raw['south']);
     }
 }

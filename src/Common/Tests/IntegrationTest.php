@@ -208,7 +208,7 @@ class IntegrationTest extends TestCase
         $dirPath = __DIR__.DIRECTORY_SEPARATOR.'json-coordinates'.DIRECTORY_SEPARATOR;
 
         foreach (scandir($dirPath) as $file) {
-            if (!is_file($dirPath.$file) || substr($file, -5) !== '.json') {
+            if (!is_file($dirPath.$file) || '.json' !== substr($file, -5)) {
                 continue;
             }
 

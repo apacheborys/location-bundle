@@ -56,7 +56,7 @@ final class AddressCollection implements \IteratorAggregate, \Countable
     {
         foreach ($addresses as $address) {
             if (!($address instanceof Address)) {
-                throw new \InvalidArgumentException(sprintf('Invalid instance value type. Expected: %s, in fact: %s',Address::class, get_class($address)));
+                throw new \InvalidArgumentException(sprintf('Invalid instance value type. Expected: %s, in fact: %s', Address::class, get_class($address)));
             }
         }
     }

@@ -57,7 +57,6 @@ class Country implements Arrayable
         return $this->code;
     }
 
-
     public function toArray(): array
     {
         return [
@@ -74,6 +73,6 @@ class Country implements Arrayable
             }
         }
 
-        return new self((string)$raw['name'], (string)$raw['code']);
+        return new self((string) $raw['name'], (string) $raw['code']);
     }
 }
