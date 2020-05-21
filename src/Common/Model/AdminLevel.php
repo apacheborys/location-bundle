@@ -59,6 +59,6 @@ class AdminLevel implements Arrayable
             }
         }
 
-        return new AdminLevel((int)$raw['level'], (string)$raw['name']);
+        return new self((int)$raw['level'], (string)$raw['name']);
     }
 }

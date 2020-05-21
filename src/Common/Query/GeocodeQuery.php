@@ -37,7 +37,7 @@ class GeocodeQuery
     public function __construct(string $text, int $limit = 0, string $locale = '')
     {
         $this->text = $text;
-        $this->limit = $limit === 0 ? self::DEFAULT_LIMIT : $limit;
+        $this->limit = 0 === $limit ? self::DEFAULT_LIMIT : $limit;
         $this->locale = $locale;
     }
 

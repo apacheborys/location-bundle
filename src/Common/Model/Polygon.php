@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace ApacheBorys\Location\Model;
 
-use ApacheBorys\Location\Model\Coordinates;
-
 /**
  * @author Borys Yermokhin <borys_ermokhin@yahoo.com>
  */

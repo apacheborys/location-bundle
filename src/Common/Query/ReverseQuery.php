@@ -39,7 +39,7 @@ class ReverseQuery
     public function __construct(Coordinates $coordinate, int $limit = 0, string $locale = '')
     {
         $this->coordinate = $coordinate;
-        $this->limit = $limit === 0 ? self::DEFAULT_LIMIT : $limit;
+        $this->limit = 0 === $limit ? self::DEFAULT_LIMIT : $limit;
         $this->locale = $locale;
     }
 

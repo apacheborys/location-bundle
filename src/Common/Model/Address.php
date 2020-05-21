@@ -148,7 +148,7 @@ class Address implements Arrayable
             }
         }
 
-        return new Address(
+        return new self(
             $raw['locale'],
             AdminLevelCollection::fromArray($raw['adminLevels']),
             $raw['streetNumber'],

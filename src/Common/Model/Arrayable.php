@@ -19,5 +19,5 @@ interface Arrayable
 {
     public function toArray(): array;
 
-    public static function fromArray(array $raw): Arrayable;
+    public static function fromArray(array $raw): self;
 }

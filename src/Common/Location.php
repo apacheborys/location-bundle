@@ -59,9 +59,6 @@ class Location
         return $this->dataBase->getAllPlaces($offset, $limit);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function geocodeQuery(GeocodeQuery $query): AddressCollection
     {
         $result = [];
@@ -79,9 +76,6 @@ class Location
         return new AddressCollection($result);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function reverseQuery(ReverseQuery $query): AddressCollection
     {
         $result = $this->findPlaceByCoordinates($query->getCoordinates(), $query->getLocale() ? $query->getLocale() : '');
@@ -192,11 +186,8 @@ class Location
         return (bool) $c;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName(): string
     {
-        return 'storageLocation';
+        return 'locationBundle';
     }
 }

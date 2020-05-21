@@ -135,7 +135,7 @@ class IntegrationTest extends TestCase
     public function testReverseQueryWithLocale()
     {
         // Somewhere in Dusseldorf
-        $result = $this->location->reverseQuery(new ReverseQuery(new Coordinates(6.761729,51.231426),0, 'de'));
+        $result = $this->location->reverseQuery(new ReverseQuery(new Coordinates(6.761729, 51.231426), 0, 'de'));
 
         // Check Dusseldorf assets in german language
         $this->checkDusseldorfAssetsInGermanLang(current($result->all()));
@@ -205,7 +205,7 @@ class IntegrationTest extends TestCase
     private function loadJsonCoordinates(Location $provider): bool
     {
         $success = true;
-        $dirPath = __DIR__ . DIRECTORY_SEPARATOR.'json-coordinates'.DIRECTORY_SEPARATOR;
+        $dirPath = __DIR__.DIRECTORY_SEPARATOR.'json-coordinates'.DIRECTORY_SEPARATOR;
 
         foreach (scandir($dirPath) as $file) {
             if (!is_file($dirPath.$file) || substr($file, -5) !== '.json') {
@@ -239,7 +239,7 @@ class IntegrationTest extends TestCase
 
         $addresses = [];
         foreach ($root['properties'] as $locale => $rawAddress) {
-            if ($locale === 'common') {
+            if ('common' === $locale) {
                 continue;
             }
             $addresses[$locale] = $this->mapRawDataToAddress($rawAddress, $locale);

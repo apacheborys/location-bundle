@@ -82,18 +82,11 @@ final class AdminLevelCollection implements \IteratorAggregate, \Countable, Arra
     private function validateBeforeAdd(AdminLevel $adminLevel)
     {
         if ($adminLevel->getLevel() < 0) {
-            throw new \OutOfBoundsException(sprintf(
-                'Admin level %s have a wrong level %s',
-                $adminLevel->getName(),
-                $adminLevel->getLevel()
-            ));
+            throw new \OutOfBoundsException(sprintf('Admin level %s have a wrong level %s', $adminLevel->getName(), $adminLevel->getLevel()));
         }
 
         if ($this->has($adminLevel->getLevel())) {
-            throw new \InvalidArgumentException(sprintf(
-                'Admin collection already have %s level. Collection shouldn\'t have two AdminLevel with same levels',
-                $adminLevel->getLevel()
-            ));
+            throw new \InvalidArgumentException(sprintf('Admin collection already have %s level. Collection shouldn\'t have two AdminLevel with same levels', $adminLevel->getLevel()));
         }
     }
 
@@ -122,6 +115,6 @@ final class AdminLevelCollection implements \IteratorAggregate, \Countable, Arra
             $adminLevels[] = AdminLevel::fromArray($rawLevel);
         }
 
-        return new AdminLevelCollection($adminLevels);
+        return new self($adminLevels);
     }
 }

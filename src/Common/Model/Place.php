@@ -190,7 +190,7 @@ class Place
         foreach ($rawPolygons as $rawPolygon) {
             $tempPolygon = new Polygon();
             foreach ($rawPolygon as $coordinate) {
-                $tempPolygon->addCoordinates(new Coordinates((float)$coordinate['lon'], (float)$coordinate['lat']));
+                $tempPolygon->addCoordinates(new Coordinates((float) $coordinate['lon'], (float) $coordinate['lat']));
             }
             $this->polygons[] = $tempPolygon;
         }
@@ -224,7 +224,7 @@ class Place
      *
      * @return Place
      */
-    public static function createFromArray(array $data, array $includeLocales = []): Place
+    public static function createFromArray(array $data, array $includeLocales = []): self
     {
         $addresses = [];
         $firstLocale = '';

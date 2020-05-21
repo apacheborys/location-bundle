@@ -156,7 +156,7 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
     {
         $stmtPlace = $this->databaseProvider->prepare($this->helper->queryInsertPlace());
         foreach (Constants::FIELDS_FOR_PLACE as $field => $ref) {
-            if ($field === Constants::COMPRESSED_DATA) {
+            if (Constants::COMPRESSED_DATA === $field) {
                 continue;
             }
             $stmtPlace->bindValue(':'.$field, $this->getValueForDb($place, $ref, Place::DEFAULT_LOCALE));
@@ -422,10 +422,10 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
                 $placeFromDb[Constants::TIMEZONE],
                 $placeFromDb[Constants::PROVIDED_BY],
                 new Bounds(
-                    (float)$placeFromDb[Constants::BOUNDS_WEST],
-                    (float)$placeFromDb[Constants::BOUNDS_EAST],
-                    (float)$placeFromDb[Constants::BOUNDS_NORTH],
-                    (float)$placeFromDb[Constants::BOUNDS_SOUTH]
+                    (float) $placeFromDb[Constants::BOUNDS_WEST],
+                    (float) $placeFromDb[Constants::BOUNDS_EAST],
+                    (float) $placeFromDb[Constants::BOUNDS_NORTH],
+                    (float) $placeFromDb[Constants::BOUNDS_SOUTH]
                 )
             );
             $resultPlace->setObjectHash($objectHash);
@@ -488,8 +488,8 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
                 $pln = (int) $rawPolygon[Constants::POLYGON_NUMBER];
                 $pnn = (int) $rawPolygon[Constants::POINT_NUMBER];
                 $polygonPoints[$pln][$pnn] = new Coordinates(
-                    (float)$rawPolygon[Constants::LONGITUDE],
-                    (float)$rawPolygon[Constants::LATITUDE]
+                    (float) $rawPolygon[Constants::LONGITUDE],
+                    (float) $rawPolygon[Constants::LATITUDE]
                 );
             }
 
