@@ -10,3 +10,4 @@ enabled:
 
 disabled:
     - phpdoc_annotation_without_dot
+    - phpdoc_summary
