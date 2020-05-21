@@ -13,6 +13,10 @@
 composer require apacheborys/location-bundle
 ```
 
+### How to use
+
+[link](src/Common/Readme.md)
+
 ### Testing
 
 Please run `composer test`.

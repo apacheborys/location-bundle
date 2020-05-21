@@ -17,7 +17,7 @@ namespace ApacheBorys\Location\Model;
  */
 final class DBConfig
 {
-    const GLOBAL_PREFIX = ['geocoder', 'storageProvider'];
+    const GLOBAL_PREFIX = ['location', 'bundle'];
 
     const KEY_FOR_DUMP_KEYS = 'dump-keys';
 
