@@ -4,7 +4,8 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 ## 2.0
 
-Transform to common part of library
++ Transform to common part of library
++ Fix mistake in search engine
 
 ## 1.2.0
 
