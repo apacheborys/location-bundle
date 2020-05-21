@@ -68,9 +68,9 @@ install:
         if [[ $skip ]]; then
             echo -e "\\n\\e[1;34mIntermediate PHP version $PHP is skipped for pull requests.\\e[0m"
         elif [[ $deps = high ]]; then
-            echo "$COMPONENTS" | parallel --gnu -j10% "tfold {} 'cd {} && $COMPOSER_UP && $PHPUNIT_X$LEGACY && $GEOIP_EXT_REMOVE'"
+            echo "$COMPONENTS" | parallel --gnu -j10% "tfold {} 'cd {} && $COMPOSER_UP && $PHPUNIT_X$LEGACY'"
         elif [[ $deps = low ]]; then
-            echo "$COMPONENTS" | parallel --gnu -j10% "tfold {} 'cd {} && $COMPOSER_UP --prefer-lowest --prefer-stable && $PHPUNIT_X && $GEOIP_EXT_REMOVE'"
+            echo "$COMPONENTS" | parallel --gnu -j10% "tfold {} 'cd {} && $COMPOSER_UP --prefer-lowest --prefer-stable && $PHPUNIT_X'"
         else
             echo "$COMPONENTS" | parallel --gnu "tfold {} $PHPUNIT_X {}"
             tfold tty-group $PHPUNIT --group tty

@@ -6,4 +6,5 @@ finder:
         - "tests"
 
 enabled:
+    - phpdoc_annotation_without_dot
     - short_array_syntax
