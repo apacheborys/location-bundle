@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace ApacheBorys\Location;
 
 use ApacheBorys\Location\Model\Address;
-use ApacheBorys\Location\Model\AddressCollection;
 use ApacheBorys\Location\Model\AdminLevel;
 use ApacheBorys\Location\Model\AdminLevelCollection;
 use ApacheBorys\Location\Model\Coordinates;
