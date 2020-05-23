@@ -77,7 +77,8 @@ class IntegrationTest extends TestCase
     {
         $result = $this->location->reverseQuery(new ReverseQuery(new Coordinates($lon, $lat), 0, 'en'));
         /** @var Address $address */
-        $address = \SplFixedArray::fromArray($result->all())->current();
+        $place = \SplFixedArray::fromArray($result->all())->current();
+        $address = $place->getSelectedAddress();
 
         $this->assertEquals($expected[self::ELEM_STREET_NUMBER], $address->getStreetNumber());
         $this->assertEquals($expected[self::ELEM_STREET_NUMBER], $address->getStreetNumber());
@@ -192,11 +193,11 @@ class IntegrationTest extends TestCase
         ];
     }
 
-    private function checkDusseldorfAssetsInGermanLang(Address $address)
+    private function checkDusseldorfAssetsInGermanLang(Place $place)
     {
-        // TODO should be realized assertation through Place entity
-        // $this->assertEquals(51.2343, $location->getCoordinates()->getLatitude(), 'Latitude should be in Dusseldorf', 0.1);
-        // $this->assertEquals(6.73134, $location->getCoordinates()->getLongitude(), 'Longitude should be in Dusseldorf', 0.1);
+        $this->assertEquals(51.1243747, $place->getBounds()->getEast(), 'Latitude should be in Dusseldorf', 0.1);
+        $this->assertEquals(6.9398848, $place->getBounds()->getNorth(), 'Longitude should be in Dusseldorf', 0.1);
+        $address = $place->getSelectedAddress();
         $this->assertEquals('Düsseldorf', $address->getSubLocality());
         $this->assertEquals('Nordrhein-Westfalen', $address->getLocality());
         $this->assertEquals('Deutschland', $address->getCountry()->getName());

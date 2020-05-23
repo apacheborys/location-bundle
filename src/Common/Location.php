@@ -19,6 +19,7 @@ use ApacheBorys\Location\Model\AdminLevelCollection;
 use ApacheBorys\Location\Model\Coordinates;
 use ApacheBorys\Location\Database\DataBaseInterface;
 use ApacheBorys\Location\Model\Place;
+use ApacheBorys\Location\Model\PlaceCollection;
 use ApacheBorys\Location\Model\Polygon;
 use ApacheBorys\Location\Query\GeocodeQuery;
 use ApacheBorys\Location\Query\ReverseQuery;
@@ -59,9 +60,8 @@ class Location
         return $this->dataBase->getAllPlaces($offset, $limit);
     }
 
-    public function geocodeQuery(GeocodeQuery $query): AddressCollection
+    public function geocodeQuery(GeocodeQuery $query): PlaceCollection
     {
-        $result = [];
         $places = $this->dataBase->get(
             $this->dataBase->normalizeStringForKeyName($query->getText()),
             0,
@@ -69,18 +69,14 @@ class Location
             $query->getLocale() ? $query->getLocale() : ''
         );
 
-        foreach ($places as $place) {
-            $result = array_merge($result, $place->getAvailableAddresses());
-        }
-
-        return new AddressCollection($result);
+        return new PlaceCollection($places ? $places : []);
     }
 
-    public function reverseQuery(ReverseQuery $query): AddressCollection
+    public function reverseQuery(ReverseQuery $query): PlaceCollection
     {
         $result = $this->findPlaceByCoordinates($query->getCoordinates(), $query->getLocale() ? $query->getLocale() : '');
 
-        return new AddressCollection($result ? $result->getAvailableAddresses() : []);
+        return new PlaceCollection($result ? [$result] : []);
     }
 
     /**
