@@ -183,7 +183,7 @@ abstract class AbstractDatabase
 
     /**
      * Search in each key, needed phrase @see get
-     * Returning all keys what fitable for phrase
+     * Returning all keys what appropriate for phrase
      *
      * @param string $phrase
      * @param int    $page
