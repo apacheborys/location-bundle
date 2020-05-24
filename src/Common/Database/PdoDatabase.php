@@ -43,8 +43,12 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
 
     /**
      * By that keys we will store hashes (references) to fetch real object
+     * first key - locale
+     * second key - admin level
+     * third key - compiled key from Address of current locale
+     * value - hash of object
      *
-     * @var string[][]
+     * @var string[][][]
      */
     protected $actualKeys = [];
 
@@ -94,7 +98,10 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
         return true;
     }
 
-    public function get(string $searchKey, int $page = 0, int $maxResults = 30, string $locale = ''): array
+    /**
+     * {@inheritdoc}
+     */
+    public function get(string $searchKey, int $page = 0, int $maxResults = 30, string $locale = '', int $filterAdminLevel = -1): array
     {
         if ($maxResults > $this->dbConfig->getMaxPlacesInOneResponse()) {
             $maxResults = $this->dbConfig->getMaxPlacesInOneResponse();
@@ -106,8 +113,10 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
 
         $result = [];
 
-        foreach ($this->makeSearch($searchKey, $page, $maxResults, $locale) as $key) {
-            $result[] = $this->getPlace($this->actualKeys[$locale][$key]);
+        foreach ($this->makeSearch($searchKey, $page, $maxResults, $locale, $filterAdminLevel) as $key) {
+            $adminLevel = $this->findAdminLevelForKey($locale, $key);
+
+            $result[] = $this->getPlace($this->actualKeys[$locale][$adminLevel][$key]);
         }
 
         return $result;
@@ -117,9 +126,9 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
     {
         if ($this->deletePlace($place->getObjectHash())) {
             foreach ($this->actualKeys as $locale => $localeKeys) {
-                $search = array_search($place->getObjectHash(), $localeKeys);
+                $search = array_search($place->getObjectHash(), $localeKeys[$place->getMaxAdminLevel()]);
                 if (is_string($search)) {
-                    unset($this->actualKeys[$locale][$search]);
+                    unset($this->actualKeys[$locale][$place->getMaxAdminLevel()][$search]);
                 }
             }
             unset($this->objectsHashes[$place->getObjectHash()]);
@@ -173,7 +182,7 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
         } else {
             $stmtPlace->bindValue(':compressed_data', null);
 
-            list($stmtAddress, $stmtAdminLevel) = $this->prepareAddressesFroInsert($place);
+            list($stmtAddress, $stmtAdminLevel) = $this->prepareAddressesForInsert($place);
             $stmtPolygon = $this->preparePolygonsForInsert($place);
         }
 
@@ -247,7 +256,7 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
      *
      * @return \PDOStatement[][]
      */
-    private function prepareAddressesFroInsert(Place $place): array
+    private function prepareAddressesForInsert(Place $place): array
     {
         $stmtAddress = $stmtAdminLevel = [];
 
@@ -275,7 +284,7 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
         foreach ($place->getAvailableAddresses() as $locale => $address) {
             $stmtSearchKeyForAddress[$locale] = $this->prepareSearchKeyForInsert($place, $address, $locale);
 
-            $this->actualKeys[$locale][$this->compileKey($address, true, false)] = $place->getObjectHash();
+            $this->actualKeys[$locale][$place->getMaxAdminLevel()][$this->compileKey($address, true, false)] = $place->getObjectHash();
         }
 
         return $stmtSearchKeyForAddress;
@@ -324,6 +333,7 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
         $tempStmt = $this->databaseProvider->prepare($this->helper->queryInsertSearchKey());
         $tempStmt->bindValue(':'.Constants::OBJECT_HASH, $place->getObjectHash());
         $tempStmt->bindValue(':'.Constants::LOCALE, $locale);
+        $tempStmt->bindValue(':'.Constants::LEVEL, $place->getMaxAdminLevel());
         $tempStmt->bindValue(':'.Constants::SEARCH_TEXT, $this->compileKey($address, true, false));
 
         return $tempStmt;
@@ -595,7 +605,11 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
 
             $rawActKeys = $stmt->fetchAll();
             foreach ($rawActKeys as $rawActKey) {
-                $this->actualKeys[$rawActKey['locale']][$rawActKey['search_text']] = $rawActKey['object_hash'];
+                $this->actualKeys
+                    [$rawActKey[Constants::LOCALE]]
+                    [$rawActKey[Constants::LEVEL]]
+                    [$rawActKey[Constants::SEARCH_TEXT]] =
+                        $rawActKey[Constants::OBJECT_HASH];
             }
 
             ++$page;
@@ -610,7 +624,7 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
         $stmt->execute();
 
         foreach ($stmt->fetchAll() as $rawLevel) {
-            $this->existAdminLevels[$rawLevel['level']] = true;
+            $this->existAdminLevels[$rawLevel[Constants::LEVEL]] = true;
         }
 
         return true;

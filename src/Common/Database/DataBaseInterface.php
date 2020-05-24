@@ -42,10 +42,11 @@ interface DataBaseInterface
      * @param int    $page
      * @param int    $maxResults
      * @param string $locale
+     * @param int    $filterAdminLevel
      *
      * @return Place[]
      */
-    public function get(string $searchKey, int $page = 0, int $maxResults = 30, string $locale = ''): array;
+    public function get(string $searchKey, int $page = 0, int $maxResults = 30, string $locale = '', int $filterAdminLevel = -1): array;
 
     /**
      * @param Place $place

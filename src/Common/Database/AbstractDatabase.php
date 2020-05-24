@@ -189,17 +189,24 @@ abstract class AbstractDatabase
      * @param int    $page
      * @param int    $maxResults
      * @param string $locale
+     * @param int    $filterAdminLevel
      *
      * @return string[]
      */
-    protected function makeSearch(string $phrase, int $page, int $maxResults, string $locale): array
+    protected function makeSearch(string $phrase, int $page, int $maxResults, string $locale, int $filterAdminLevel = -1): array
     {
         $result = [];
 
-        foreach ($this->actualKeys[$locale] as $actualKey => $objectHash) {
-            $grade = $this->evaluateHitPhrase($phrase, $actualKey);
-            if ($grade > 0) {
-                $result[$actualKey] = $grade;
+        foreach ($this->actualKeys[$locale] as $adminLevel => $actualKeys) {
+            if ($filterAdminLevel > -1 && $filterAdminLevel !== $adminLevel) {
+                continue;
+            }
+
+            foreach ($actualKeys as $actualKey => $objectHash) {
+                $grade = $this->evaluateHitPhrase($phrase, $actualKey);
+                if ($grade > 0) {
+                    $result[$actualKey] = $grade;
+                }
             }
         }
         arsort($result);
@@ -243,5 +250,22 @@ abstract class AbstractDatabase
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $locale
+     * @param string $key
+     *
+     * @return int
+     */
+    protected function findAdminLevelForKey(string $locale, string $key): int
+    {
+        foreach ($this->existAdminLevels as $existAdminLevel => $value) {
+            if (isset($this->actualKeys[$locale][$existAdminLevel][$key])) {
+                return $existAdminLevel;
+            }
+        }
+
+        throw new \UnexpectedValueException('Can\'t find admin level for key '.$key);
     }
 }

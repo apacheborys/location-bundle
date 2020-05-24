@@ -24,8 +24,12 @@ class Psr6Database extends AbstractDatabase implements DataBaseInterface
 {
     /**
      * By that keys we will store hashes (references) to fetch real object
+     * first key - locale
+     * second key - admin level
+     * third key - compiled key from Address of current locale
+     * value - hash of object
      *
-     * @var string[][]
+     * @var string[][][]
      */
     protected $actualKeys = [];
 
@@ -106,7 +110,7 @@ class Psr6Database extends AbstractDatabase implements DataBaseInterface
      *
      * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function get(string $searchKey, int $page = 0, int $maxResults = 30, string $locale = ''): array
+    public function get(string $searchKey, int $page = 0, int $maxResults = 30, string $locale = '', int $filterAdminLevel = -1): array
     {
         if ($maxResults > $this->dbConfig->getMaxPlacesInOneResponse()) {
             $maxResults = $this->dbConfig->getMaxPlacesInOneResponse();
@@ -118,8 +122,10 @@ class Psr6Database extends AbstractDatabase implements DataBaseInterface
 
         $result = [];
 
-        foreach ($this->makeSearch($searchKey, $page, $maxResults, $locale) as $key) {
-            $item = $this->databaseProvider->getItem($this->actualKeys[$locale][$key]);
+        foreach ($this->makeSearch($searchKey, $page, $maxResults, $locale, $filterAdminLevel) as $key) {
+            $adminLevel = $this->findAdminLevelForKey($locale, $key);
+
+            $item = $this->databaseProvider->getItem($this->actualKeys[$locale][$adminLevel][$key]);
             if ($item->isHit()) {
                 $this->dbConfig->isUseCompression() ?
                     $rawData = json_decode(gzuncompress($item->get()), true) :
@@ -138,7 +144,7 @@ class Psr6Database extends AbstractDatabase implements DataBaseInterface
      */
     public function getAllPlaces(int $offset = 0, int $limit = 50): array
     {
-        if ($offset > count($this->actualKeys)) {
+        if ($offset > count($this->objectsHashes)) {
             return [];
         }
 
@@ -191,8 +197,8 @@ class Psr6Database extends AbstractDatabase implements DataBaseInterface
         foreach ($this->actualKeys as $locale => $keys) {
             $place->selectLocale($locale);
             $keyForDelete = $this->compileKey($place->getSelectedAddress());
-            if (isset($keys[$keyForDelete])) {
-                unset($this->actualKeys[$locale][$keyForDelete]);
+            if (isset($keys[$place->getMaxAdminLevel()][$keyForDelete])) {
+                unset($this->actualKeys[$locale][$place->getMaxAdminLevel()][$keyForDelete]);
                 $this->updateActualKeys();
             }
         }
@@ -349,7 +355,7 @@ class Psr6Database extends AbstractDatabase implements DataBaseInterface
         $this->updateHashKeys();
 
         foreach ($this->compileKeys($place) as $locale => $key) {
-            $this->actualKeys[$locale][$key] = $place->getObjectHash();
+            $this->actualKeys[$locale][$place->getMaxAdminLevel()][$key] = $place->getObjectHash();
         }
         $this->updateActualKeys();
 

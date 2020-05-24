@@ -43,6 +43,7 @@ final class SqliteHelper implements HelperInterface
             'CREATE TABLE IF NOT EXISTS "'.$this->prefix.'actual_keys" (
 	"'.Constants::OBJECT_HASH.'"	TEXT,
 	"'.Constants::LOCALE.'"	TEXT,
+	"'.Constants::LEVEL.'"	INTEGER,
 	"'.Constants::SEARCH_TEXT.'"	TEXT,
 	FOREIGN KEY("object_hash") REFERENCES "'.$this->prefix.'place"("object_hash")
 )',
@@ -105,7 +106,7 @@ final class SqliteHelper implements HelperInterface
 
     public function queryGetAllActualKeys(): string
     {
-        return 'SELECT '.Constants::OBJECT_HASH.', '.Constants::LOCALE.', '.Constants::SEARCH_TEXT.
+        return 'SELECT '.implode(', ', [Constants::OBJECT_HASH, Constants::LOCALE, Constants::LEVEL, Constants::SEARCH_TEXT]).
             ' FROM '.$this->prefix.'actual_keys LIMIT :offset, :limit';
     }
 

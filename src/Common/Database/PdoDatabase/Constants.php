@@ -112,6 +112,7 @@ final class Constants
     const FIELDS_FOR_ACTUAL_KEYS = [
         self::OBJECT_HASH => Place::class.'::objectHash',
         self::LOCALE => Address::class.'::locale',
+        self::LEVEL => '',
         self::SEARCH_TEXT => '',
     ];
 }
