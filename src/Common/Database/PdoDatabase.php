@@ -605,11 +605,7 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
 
             $rawActKeys = $stmt->fetchAll();
             foreach ($rawActKeys as $rawActKey) {
-                $this->actualKeys
-                    [$rawActKey[Constants::LOCALE]]
-                    [$rawActKey[Constants::LEVEL]]
-                    [$rawActKey[Constants::SEARCH_TEXT]] =
-                        $rawActKey[Constants::OBJECT_HASH];
+                $this->actualKeys[$rawActKey[Constants::LOCALE]][$rawActKey[Constants::LEVEL]][$rawActKey[Constants::SEARCH_TEXT]] = $rawActKey[Constants::OBJECT_HASH];
             }
 
             ++$page;
