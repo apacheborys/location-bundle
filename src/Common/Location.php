@@ -87,7 +87,7 @@ class Location
     private function findPlaceByCoordinates(Coordinates $coordinates, string $locale = '')
     {
         $levels = $this->dataBase->getAdminLevels();
-        asort($levels);
+        arsort($levels);
 
         /** @var Place|null $result */
         $result = null;
@@ -101,7 +101,8 @@ class Location
                 $this->dataBase->compileKey($tempPlace, true, true, false),
                 $page,
                 $this->dataBase->getDbConfig()->getMaxPlacesInOneResponse(),
-                $locale
+                $locale,
+                $level
             )) {
                 foreach ($possiblePlaces as $place) {
                     if ($result && $level <= $place->getMaxAdminLevel()) {
@@ -119,8 +120,6 @@ class Location
 
                 ++$page;
             }
-
-            break;
         }
 
         return $result;
