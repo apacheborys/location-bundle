@@ -31,7 +31,14 @@ class Coordinates implements Arrayable
      */
     private $latitude;
 
-    public function __construct(float $longitude, float $latitude)
+    /**
+     * Height above sea level in meters
+     *
+     * @var float
+     */
+    private $altitude;
+
+    public function __construct(float $longitude, float $latitude, float $altitude = 0)
     {
         if (!self::assertLongitude($longitude)) {
             throw new \InvalidArgumentException('Wrong longitude argument');
@@ -42,6 +49,7 @@ class Coordinates implements Arrayable
 
         $this->longitude = $longitude;
         $this->latitude = $latitude;
+        $this->altitude = $altitude;
     }
 
     /**
@@ -60,11 +68,17 @@ class Coordinates implements Arrayable
         return $this->latitude;
     }
 
+    public function getAltitude(): float
+    {
+        return $this->altitude;
+    }
+
     public function toArray(): array
     {
         return [
             'lon' => $this->longitude,
             'lat' => $this->latitude,
+            'alt' => $this->altitude,
         ];
     }
 
@@ -76,6 +90,6 @@ class Coordinates implements Arrayable
             }
         }
 
-        return new self((float) $raw['lon'], (float) $raw['lat']);
+        return new self((float) $raw['lon'], (float) $raw['lat'], $raw['alt'] ?? 0);
     }
 }

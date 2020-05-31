@@ -68,6 +68,8 @@ final class Constants
 
     const LONGITUDE = 'longitude';
 
+    const ALTITUDE = 'altitude';
+
     const SEARCH_TEXT = 'search_text';
 
     const FIELDS_FOR_PLACE = [
@@ -107,6 +109,7 @@ final class Constants
         self::POINT_NUMBER => '',
         self::LATITUDE => Coordinates::class.'::latitude',
         self::LONGITUDE => Coordinates::class.'::longitude',
+        self::ALTITUDE => Coordinates::class.'::altitude',
     ];
 
     const FIELDS_FOR_ACTUAL_KEYS = [

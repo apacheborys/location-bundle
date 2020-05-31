@@ -31,7 +31,7 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 /**
  * @author Borys Yermokhin <borys_ermokhin@yahoo.com>
  */
-class IntegrationTest extends TestCase
+class LocationTest extends TestCase
 {
     const ELEM_LATITUDE = 'latitude';
 
@@ -233,7 +233,7 @@ class IntegrationTest extends TestCase
         foreach ($root['geometry']['coordinates'] as $rawPolygon) {
             $tempPolygon = new Polygon();
             foreach ($rawPolygon as $coordinates) {
-                $tempPolygon->addCoordinates(new Coordinates($coordinates[0], $coordinates[1]));
+                $tempPolygon->addCoordinates(new Coordinates($coordinates[0], $coordinates[1], $coordinates[2] ?? 0));
             }
             $polygons[] = $tempPolygon;
         }

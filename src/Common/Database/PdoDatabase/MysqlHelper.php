@@ -71,6 +71,7 @@ final class MysqlHelper implements HelperInterface
 	"'.Constants::POINT_NUMBER.'"	INTEGER,
 	"'.Constants::LONGITUDE.'"	REAL,
 	"'.Constants::LATITUDE.'"	REAL,
+	"'.Constants::ALTITUDE.'"	REAL,
 	FOREIGN KEY("'.Constants::OBJECT_HASH.'") REFERENCES "'.$this->prefix.'place"("'.Constants::OBJECT_HASH.'")
 )',
             'CREATE UNIQUE INDEX IF NOT EXISTS "actual_keys_id" ON "'.$this->prefix.'actual_keys" (

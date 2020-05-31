@@ -243,6 +243,7 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
                 $tempStmt->bindValue(':'.Constants::POINT_NUMBER, $coordNumber);
                 $tempStmt->bindValue(':'.Constants::LATITUDE, $coordinate->getLatitude());
                 $tempStmt->bindValue(':'.Constants::LONGITUDE, $coordinate->getLongitude());
+                $tempStmt->bindValue(':'.Constants::ALTITUDE, $coordinate->getAltitude());
 
                 $stmt[$polygonNumber][$coordNumber] = $tempStmt;
             }
@@ -499,7 +500,8 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
                 $pnn = (int) $rawPolygon[Constants::POINT_NUMBER];
                 $polygonPoints[$pln][$pnn] = new Coordinates(
                     (float) $rawPolygon[Constants::LONGITUDE],
-                    (float) $rawPolygon[Constants::LATITUDE]
+                    (float) $rawPolygon[Constants::LATITUDE],
+                    (float) $rawPolygon[Constants::ALTITUDE]
                 );
             }
 
