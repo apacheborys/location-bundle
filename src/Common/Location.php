@@ -79,6 +79,31 @@ class Location
     }
 
     /**
+     * Measuring distance between two coordinates with take to attention altitude. Result in kilometers.
+     *
+     * @param Coordinates $a
+     * @param Coordinates $b
+     *
+     * @return float
+     */
+    public function distance(Coordinates $a, Coordinates $b): float
+    {
+        $delta_lat = $b->getLatitude() - $a->getLatitude();
+        $delta_lon = $b->getLongitude() - $a->getLongitude();
+        $delta_alt = abs($b->getAltitude() - $a->getAltitude()) * 0.001;
+
+        $alpha    = $delta_lat / 2;
+        $beta     = $delta_lon / 2;
+        $arg      =
+            pow(sin(deg2rad($alpha)), 2) +
+            cos(deg2rad($a->getLatitude())) * cos(deg2rad($b->getLatitude())) * pow(sin(deg2rad($beta)), 2);
+        $c        = asin(min(1, sqrt($arg)));
+        $distance_flat = (2 * Constants::EARTH_RADIUS * $c);
+
+        return sqrt(pow($distance_flat, 2) + pow($delta_alt, 2));
+    }
+
+    /**
      * @param Coordinates $coordinates
      * @param string      $locale
      *

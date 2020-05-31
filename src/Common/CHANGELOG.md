@@ -5,6 +5,7 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 ## 2.1
 
 + Add to coordinates altitude
++ Add measuring distance between two coordinates
 
 ## 2.0
 

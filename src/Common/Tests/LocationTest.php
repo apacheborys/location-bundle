@@ -143,6 +143,21 @@ class LocationTest extends TestCase
     }
 
     /**
+     * Measure distance between Kyevo-Pecherska Lavra and Princess Olga monument in Kyiv, Ukraine
+     *
+     * @covers \ApacheBorys\Location\Location::distance
+     */
+    public function testMeasureDistance()
+    {
+        $distance = $this->location->distance(
+            new Coordinates(30.520620, 50.455414, 172.6),
+            new Coordinates(30.557294, 50.434596, 190.8)
+        );
+
+        $this->assertEquals(3.4799019034641283, $distance);
+    }
+
+    /**
      * @see testNestedPolygons
      * @case 1 Should return first, main layer
      * @case 2 Should return third, last layer
