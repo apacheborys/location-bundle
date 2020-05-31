@@ -9,6 +9,7 @@ With that bundle, you will able to build own server of geo data. Manipulation fu
 * [add, delete and update places](#working-with-database)
 * [find place what include specific coordinates point](#find-place-what-include-specific-coordinates-point)
 * [find place by text phrase](#find-place-by-text)
+* [useful functions](#useful-functions)
 
 ### Benefits
 
@@ -151,6 +152,21 @@ For `geocodeQuery` use any text what you want to find.
 ```php
 $address = $locationBundle->geocodeQuery(new \ApacheBorys\Location\Query\GeocodeQuery('Kyiv, Ukraine'));
 ```
+
+### Useful functions
+
+#### Measuring distance between two coordinates
+
+For measuring distance, please pass two coordinates to distance method. Please take attention what altitude take to calculation too.
+
+```php
+$distance = $this->location->distance(
+    new \ApacheBorys\Location\Model\Coordinates(30.520620, 50.455414, 172.6),
+    new \ApacheBorys\Location\Model\Coordinates(30.557294, 50.434596, 190.8)
+);
+```
+
+In result, you will get distance in kilometers without rounding. As result, you will have preciseness more than millimeter.
 
 ### Working with Database
 

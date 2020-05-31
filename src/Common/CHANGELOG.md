@@ -6,6 +6,7 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 
 + Add to coordinates altitude
 + Add measuring distance between two coordinates
++ Fix potential issue in findPlaceByCoordinates method
 
 ## 2.0
 

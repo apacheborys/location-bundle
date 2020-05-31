@@ -160,7 +160,7 @@ class Place
         $max = 0;
         /** @var AdminLevel $level */
         foreach ($address->getAdminLevels() as $level) {
-            if ($level->getLevel() > $max) {
+            if (strlen($level->getName()) > 0 && $level->getLevel() > $max) {
                 $max = $level->getLevel();
             }
         }
