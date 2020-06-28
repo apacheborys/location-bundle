@@ -38,6 +38,7 @@
                         "district": "Oberkassel",
                         "attribution": "Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
                         "admin": {
+                            "level0": "Germany",
                             "level1": "North Rhine-Westphalia",
                             "level2": "Düsseldorf",
                             "level3": "Oberkassel"
@@ -62,6 +63,7 @@
                         "district": "Oberkassel",
                         "attribution": "Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
                         "admin": {
+                            "level0": "Deutschland",
                             "level1": "North Rhine-Westphalia",
                             "level2": "Düsseldorf",
                             "level3": "Oberkassel"

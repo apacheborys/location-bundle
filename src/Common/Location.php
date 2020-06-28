@@ -17,6 +17,8 @@ use ApacheBorys\Location\Model\AdminLevel;
 use ApacheBorys\Location\Model\AdminLevelCollection;
 use ApacheBorys\Location\Model\Coordinates;
 use ApacheBorys\Location\Database\DataBaseInterface;
+use ApacheBorys\Location\Model\PairedCoordinates;
+use ApacheBorys\Location\Model\PairedCoordinatesCollection;
 use ApacheBorys\Location\Model\Place;
 use ApacheBorys\Location\Model\PlaceCollection;
 use ApacheBorys\Location\Model\Polygon;
@@ -79,6 +81,52 @@ class Location
     }
 
     /**
+     * Find places what boarded with specified Place. In default will be taken all places with same admin level.
+     * Also you can specify own Places what you want to check. In maxDistanceToBorder you can define maximum distance
+     * to possible neighbour point.
+     * maxDistanceToBorder should be defined in kilometers
+     *
+     * @param Place     $originalPlace
+     * @param float $maxDistanceToBorder
+     * @param Place[]   $specificPlaces
+     *
+     * @return PairedCoordinatesCollection
+     */
+    public function findTouchedPlaces(
+        Place $originalPlace,
+        float $maxDistanceToBorder = 0.1,
+        array $specificPlaces = []
+    ): PairedCoordinatesCollection {
+        $result = [];
+
+        if (count($specificPlaces) > 0) {
+            $touchedPlaces = $this->innerFindTouchedPlaces($originalPlace, $specificPlaces, $maxDistanceToBorder);
+            if ($touchedPlaces->all()) {
+                $result = array_merge($result, $touchedPlaces->all());
+            }
+        } else {
+            $page = 0;
+
+            while ($possiblePlaces = $this->dataBase->get(
+                $this->dataBase->compileKey($originalPlace->getSelectedAddress(), true, true, false),
+                $page,
+                $this->dataBase->getDbConfig()->getMaxPlacesInOneResponse(),
+                $originalPlace->getSelectedLocale(),
+                $originalPlace->getMaxAdminLevel()
+            )) {
+                $touchedPlaces = $this->innerFindTouchedPlaces($originalPlace, $possiblePlaces, $maxDistanceToBorder);
+                if ($touchedPlaces->all()) {
+                    $result = array_merge($result, $touchedPlaces->all());
+                }
+
+                ++$page;
+            }
+        }
+
+        return new PairedCoordinatesCollection($result);
+    }
+
+    /**
      * Measuring distance between two coordinates with take to attention altitude. Result in kilometers.
      *
      * @param Coordinates $a
@@ -86,7 +134,7 @@ class Location
      *
      * @return float
      */
-    public function distance(Coordinates $a, Coordinates $b): float
+    public static function distance(Coordinates $a, Coordinates $b): float
     {
         $delta_lat = $b->getLatitude() - $a->getLatitude();
         $delta_lon = $b->getLongitude() - $a->getLongitude();
@@ -203,6 +251,82 @@ class Location
         }
 
         return (bool) $c;
+    }
+
+    /**
+     * @param Place $originalPlace
+     * @param Place[] $possiblePlaces
+     * @param float $maxDistanceToBorder
+     *
+     * @return PairedCoordinatesCollection
+     */
+    private function innerFindTouchedPlaces(
+        Place $originalPlace,
+        array $possiblePlaces,
+        float $maxDistanceToBorder
+    ): PairedCoordinatesCollection {
+        $result = [];
+
+        foreach ($possiblePlaces as $possiblePlace) {
+            if ($originalPlace->isEqual($possiblePlace)) {
+                continue;
+            }
+
+            $tempResult = $this->findTouchedCoord($originalPlace, $possiblePlace, $maxDistanceToBorder);
+            if (count($tempResult) > 0) {
+                $result = array_merge($result, $tempResult);
+            }
+        }
+
+        return new PairedCoordinatesCollection($result);
+    }
+
+    /**
+     * Returns paired coordinates what touch with two passed Places
+     *
+     * @param Place $originalPlace
+     * @param Place $possiblePlace
+     * @param float $maxDistanceToBorder
+     *
+     * @return PairedCoordinates[]
+     */
+    private function findTouchedCoord(Place $originalPlace, Place $possiblePlace, float $maxDistanceToBorder): array
+    {
+        $result = [];
+
+        foreach ($possiblePlace->getPolygons() as $polygon) {
+            foreach ($polygon->getCoordinates() as $coordinate) {
+                $minDistance = $lastCoordinates = null;
+
+                foreach ($originalPlace->getPolygons() as $origPolygon) {
+                    foreach ($origPolygon->getCoordinates() as $origCoordinate) {
+                        $distance = $this->distance($coordinate, $origCoordinate);
+
+                        if ($distance <= $maxDistanceToBorder &&
+                            (is_null($minDistance) || $minDistance > $distance)
+                        ) {
+                            $minDistance = $distance;
+                            if (!is_null($lastCoordinates)) {
+                                unset($lastCoordinates);
+                            }
+                            $lastCoordinates = new PairedCoordinates(
+                                $origCoordinate,
+                                $originalPlace,
+                                $coordinate,
+                                $possiblePlace,
+                                $distance
+                            );
+                        }
+                    }
+                }
+
+                if (!is_null($lastCoordinates)) {
+                    $result[] = $lastCoordinates;
+                }
+            }
+        }
+
+        return $result;
     }
 
     public function getName(): string

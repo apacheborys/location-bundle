@@ -1,0 +1,125 @@
+{
+    "type": "FeatureCollection",
+    "geocoding": {
+        "version": "0.1.0",
+        "attribution": "Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+        "licence": "ODbL",
+        "query": "W182241811"
+    },
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "common": {
+                    "postcode": "01032",
+                    "bbox": [
+                        30.4977297,
+                        50.4403035,
+                        30.4989688,
+                        50.4408346
+                    ]
+                },
+                "en": {
+                    "geocoding": {
+                        "place_id": 129471836,
+                        "osm_type": "way",
+                        "osm_id": 182241811,
+                        "type": "secondary",
+                        "label": "Lev Tolstoi Street, Паньківщина, Центр, Kyiv, Shevchenkivskyi district, 01032, Ukraine",
+                        "name": "Lev Tolstoi Street",
+                        "country": "Ukraine",
+                        "country_code":"ua",
+                        "postcode": "01032",
+                        "city": "Kyiv",
+                        "district": "Центр",
+                        "locality": "Паньківщина",
+                        "admin": {
+                            "level4": "Lev Tolstoi Street",
+                            "level3": "Shevchenkivskyi district",
+                            "level2": "Kyiv",
+                            "level1": "Kyiv region",
+                            "level0": "Ukraine"
+                        }
+                    }
+                }
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        [
+                            30.493701711,
+                            50.438419147,
+                            170.84
+                        ],
+                        [
+                            30.495654359,
+                            50.439382628,
+                            170.47
+                        ],
+                        [
+                            30.497639194,
+                            50.440216263,
+                            180.81
+                        ],
+                        [
+                            30.499677679,
+                            50.441111384,
+                            180.21
+                        ],
+                        [
+                            30.501405022,
+                            50.441890326,
+                            170.7
+                        ],
+                        [
+                            30.502874873,
+                            50.441705841,
+                            172.48
+                        ],
+                        [
+                            30.503947756,
+                            50.441466692,
+                            173.58
+                        ],
+                        [
+                            30.50594332,
+                            50.441152381,
+                            177.1
+                        ],
+                        [
+                            30.508003256,
+                            50.440838068,
+                            176.88
+                        ],
+                        [
+                            30.508571885,
+                            50.440803903,
+                            175.8
+                        ],
+                        [
+                            30.511927319,
+                            50.440200897,
+                            172.65
+                        ],
+                        [
+                            30.51353128,
+                            50.439937825,
+                            178.87
+                        ],
+                        [
+                            30.51468463,
+                            50.439732833,
+                            177.95
+                        ],
+                        [
+                            30.51468463,
+                            50.439732833,
+                            170.6
+                        ]
+                    ]
+                ]
+            }
+        }
+    ]
+}

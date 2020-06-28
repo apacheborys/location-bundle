@@ -64,6 +64,11 @@ class Place
     private $objectHash;
 
     /**
+     * @var string|null
+     */
+    private $typePlace;
+
+    /**
      * @param Address|Address[] $address
      * @param Polygon[]|null    $polygons
      * @param string            $locale
@@ -79,7 +84,8 @@ class Place
         string $postalCode = null,
         string $timezone = null,
         string $providedBy = '',
-        Bounds $bounds = null
+        Bounds $bounds = null,
+        string $typePlace = null
     ) {
         if (is_array($address)) {
             foreach ($address as $localeNode => $addressNode) {
@@ -95,6 +101,7 @@ class Place
         $this->timezone = $timezone;
         $this->providedBy = $providedBy;
         $this->bounds = $bounds;
+        $this->typePlace = $typePlace;
     }
 
     /**
@@ -190,7 +197,11 @@ class Place
         foreach ($rawPolygons as $rawPolygon) {
             $tempPolygon = new Polygon();
             foreach ($rawPolygon as $coordinate) {
-                $tempPolygon->addCoordinates(new Coordinates((float) $coordinate['lon'], (float) $coordinate['lat']));
+                $tempPolygon->addCoordinates(new Coordinates(
+                    (float) $coordinate['lon'],
+                    (float) $coordinate['lat'],
+                    isset($coordinate['alt']) ? (float) $coordinate['alt'] : 0
+                ));
             }
             $this->polygons[] = $tempPolygon;
         }
@@ -249,7 +260,8 @@ class Place
             $data['postalCode'],
             $data['timezone'],
             $data['providedBy'],
-            Bounds::fromArray($data['bounds'])
+            Bounds::fromArray($data['bounds']),
+            $data['typePlace'] ?? null
         );
 
         if (isset($data['polygons'])) {
@@ -296,6 +308,7 @@ class Place
         $result['providedBy'] = $this->providedBy;
         $result['bounds'] = $this->bounds->toArray();
         $result['timezone'] = $this->timezone;
+        $result['typePlace'] = $this->typePlace;
 
         return $result;
     }
@@ -362,5 +375,26 @@ class Place
     public function setBounds(Bounds $bounds)
     {
         $this->bounds = $bounds;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTypePlace()
+    {
+        return $this->typePlace;
+    }
+
+    /**
+     * @param string $typePlace
+     */
+    public function setTypePlace(string $typePlace)
+    {
+        $this->typePlace = $typePlace;
+    }
+
+    public  function isEqual(Place $place): bool
+    {
+        return serialize($this->toArray()) === serialize($place->toArray());
     }
 }

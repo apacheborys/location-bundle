@@ -36,10 +36,10 @@
                         "country_code":"gb",
                         "attribution": "Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
                         "admin":{
-                            "level1":"England",
-                            "level2":"Greater London",
-                            "level3":"London",
-                            "level4":"City of Westminster"
+                            "level0":"England",
+                            "level1":"Greater London",
+                            "level2":"London",
+                            "level3":"City of Westminster"
                         }
                     }
                 }

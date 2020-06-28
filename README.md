@@ -168,6 +168,23 @@ $distance = $this->location->distance(
 
 In result, you will get distance in kilometers without rounding. As result, you will have preciseness more than millimeter.
 
+#### Find common points in different places
+
+If you want to find neighbour Places with one specific Place. It's very easy to use. Also you can find intersected routes for build way.
+You can try to find all places what contain common points. Please take attention than you can specify places what you want to check as third argument.
+
+```php
+$neighbours = $this->location->findTouchedPlaces(
+    $originalPlace,
+    $maxDistanceToBorder,
+    $specificPlaces
+);
+```
+
+Where `originalPlace` is Place what we will take as base. And try to find common points from another places.
+`maxDistanceToBorder` is float value for minimum distance to possible common point. As default - 100 meters.
+`specificPlaces` is array of Places. If you will pass some Places in that argument. Location bundle will check only that Places for common points.
+
 ### Working with Database
 
 That bundle has methods for realize database functionality:

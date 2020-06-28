@@ -1,0 +1,105 @@
+{
+    "type": "FeatureCollection",
+    "geocoding": {
+        "version": "0.1.0",
+        "attribution": "Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+        "licence": "ODbL",
+        "query": "W813671832"
+    },
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "common": {
+                    "postcode": "01032",
+                    "bbox": [
+                        30.4950213,
+                        50.4453799,
+                        30.5008092,
+                        50.4462878
+                    ]
+                },
+                "en": {
+                    "geocoding": {
+                        "place_id": 289952698,
+                        "osm_type": "way",
+                        "osm_id": 813671832,
+                        "type": "primary",
+                        "label": "Tarasa Shevchenka Boulevard, Євбаз, Центр, Kyiv, Shevchenkivskyi district, 01032, Ukraine",
+                        "name": "Tarasa Shevchenka Boulevard",
+                        "country": "Ukraine",
+                        "country_code":"ua",
+                        "postcode": "01032",
+                        "city": "Kyiv",
+                        "district": "Центр",
+                        "locality": "Євбаз",
+                        "admin": {
+                            "level4": "Tarasa Shevchenka Boulevard",
+                            "level3": "Shevchenkivskyi district",
+                            "level2": "Kyiv",
+                            "level1": "Kyiv region",
+                            "level0": "Ukraine"
+                        }
+                    }
+                }
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        [
+                            30.520105362,
+                            50.44250866,
+                            177.62
+                        ],
+                        [
+                            30.518217087,
+                            50.442727306,
+                            178.46
+                        ],
+                        [
+                            30.516318083,
+                            50.443027941,
+                            175.6
+                        ],
+                        [
+                            30.51436007,
+                            50.44335249,
+                            175.4
+                        ],
+                        [
+                            30.512750745,
+                            50.443612127,
+                            174.9
+                        ],
+                        [
+                            30.509811044,
+                            50.444097234,
+                            175.22
+                        ],
+                        [
+                            30.505422948,
+                            50.444814635,
+                            171.6
+                        ],
+                        [
+                            30.501539109,
+                            50.445456872,
+                            173.19
+                        ],
+                        [
+                            30.497515793,
+                            50.44610593,
+                            171.28
+                        ],
+                        [
+                            30.497515793,
+                            50.44610593,
+                            174.4
+                        ]
+                    ]
+                ]
+            }
+        }
+    ]
+}

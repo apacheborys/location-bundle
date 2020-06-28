@@ -21,6 +21,7 @@ use ApacheBorys\Location\Model\Country;
 use ApacheBorys\Location\Database\Psr6Database;
 use ApacheBorys\Location\Model\DBConfig;
 use ApacheBorys\Location\Model\Place;
+use ApacheBorys\Location\Model\PlaceCollection;
 use ApacheBorys\Location\Model\Polygon;
 use ApacheBorys\Location\Location;
 use ApacheBorys\Location\Query\GeocodeQuery;
@@ -158,6 +159,38 @@ class LocationTest extends TestCase
     }
 
     /**
+     * @covers       \ApacheBorys\Location\Location::findTouchedPlaces()
+     *
+     * @dataProvider providerNeighborFind
+     *
+     * @param array $originalPlace
+     * @param array $expected
+     */
+    public function testNeighborFind(array $originalPlace, array $expected)
+    {
+        $query = new GeocodeQuery('Volodymyrska street', 1);
+        $result = $this->location->geocodeQuery($query);
+
+        $this->assertEquals(1, $result->count());
+        $this->assertInstanceOf(PlaceCollection::class, $result);
+
+        $place = current($result->all());
+
+        $this->assertEquals($originalPlace, $place->getSelectedAddress()->getAdminLevels()->toArray());
+
+        $result = $this->location->findTouchedPlaces($place);
+
+        foreach ($result->all() as $pairedCoordinates) {
+            $placeB = $pairedCoordinates->getPlaceB();
+            $maxAdminLevel = $placeB->getMaxAdminLevel();
+            $adminLevelName = $placeB->getSelectedAddress()->getAdminLevels()->get($maxAdminLevel)->getName();
+
+            $this->assertArrayHasKey($adminLevelName, $expected);
+            $this->assertEquals($expected[$adminLevelName], $pairedCoordinates->getCoordinatesB()->toArray());
+        }
+    }
+
+    /**
      * @see testNestedPolygons
      * @case 1 Should return first, main layer
      * @case 2 Should return third, last layer
@@ -208,6 +241,56 @@ class LocationTest extends TestCase
         ];
     }
 
+    public function providerNeighborFind(): \Iterator
+    {
+        yield [
+            'originalPlace' => [
+                [
+                    'level' => 0,
+                    'name' => 'Ukraine',
+                ],
+                [
+                    'level' => 1,
+                    'name' => 'Kyiv region',
+                ],
+                [
+                    'level' => 2,
+                    'name' => 'Kyiv',
+                ],
+                [
+                    'level' => 3,
+                    'name' => 'Shevchenkivskyi district',
+                ],
+                [
+                    'level' => 4,
+                    'name' => 'Volodymyrska Street',
+                ],
+            ],
+            'expected' => [
+                'Tarasa Shevchenka Boulevard' => [
+                    'lon' => 30.512750745,
+                    'lat' => 50.443612127,
+                    'alt' => 174.9,
+                ],
+                'Saksahanskoho Street' => [
+                    'lon' => 30.509752037,
+                    'lat' => 50.435907831,
+                    'alt' => 175.5,
+                ],
+                'Lev Tolstoi Street' => [
+                    'lon' => 30.511927319,
+                    'lat' => 50.440200897,
+                    'alt' => 172.65,
+                ],
+                'Bohdana Khmelnytskoho Street' => [
+                    'lon' => 30.513405206,
+                    'lat' => 50.445969332,
+                    'alt' => 173.26,
+                ]
+            ],
+        ];
+    }
+
     private function checkDusseldorfAssetsInGermanLang(Place $place)
     {
         $this->assertEquals(51.1243747, $place->getBounds()->getEast(), 'Latitude should be in Dusseldorf', 0.1);
@@ -248,7 +331,15 @@ class LocationTest extends TestCase
         foreach ($root['geometry']['coordinates'] as $rawPolygon) {
             $tempPolygon = new Polygon();
             foreach ($rawPolygon as $coordinates) {
-                $tempPolygon->addCoordinates(new Coordinates($coordinates[0], $coordinates[1], $coordinates[2] ?? 0));
+                if (!isset($coordinates[0]) || !isset($coordinates[1])) {
+                    continue;
+                }
+
+                $tempPolygon->addCoordinates(new Coordinates(
+                    $coordinates[0],
+                    $coordinates[1],
+                    (!isset($coordinates[2]) || is_null($coordinates[2])) ? 0 : (float) $coordinates[2])
+                );
             }
             $polygons[] = $tempPolygon;
         }

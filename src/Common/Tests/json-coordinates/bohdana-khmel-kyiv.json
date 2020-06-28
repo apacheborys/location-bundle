@@ -1,0 +1,125 @@
+{
+    "type": "FeatureCollection",
+    "geocoding": {
+        "version": "0.1.0",
+        "attribution": "Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+        "licence": "ODbL",
+        "query": "W688113751"
+    },
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "common": {
+                    "postcode": "01901",
+                    "bbox": [
+                        30.4950213,
+                        50.4453799,
+                        30.5008092,
+                        50.4462878
+                    ]
+                },
+                "en": {
+                    "geocoding": {
+                        "place_id": 223394845,
+                        "osm_type": "way",
+                        "osm_id": 688113751,
+                        "type": "tertiary",
+                        "label": "Bohdana Khmelnytskoho Street, Бессарабка, Центр, Kyiv, Shevchenkivskyi district, 01901, Ukraine",
+                        "name": "Bohdana Khmelnytskoho Street",
+                        "country": "Ukraine",
+                        "country_code":"ua",
+                        "postcode": "01901",
+                        "city": "Kyiv",
+                        "district": "Центр",
+                        "locality": "Бессарабка",
+                        "admin": {
+                            "level4": "Bohdana Khmelnytskoho Street",
+                            "level3": "Shevchenkivskyi district",
+                            "level2": "Kyiv",
+                            "level1": "Kyiv region",
+                            "level0": "Ukraine"
+                        }
+                    }
+                }
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        [
+                            30.521011951,
+                            50.444760017,
+                            178.11
+                        ],
+                        [
+                            30.518147352,
+                            50.445197286,
+                            171.26
+                        ],
+                        [
+                            30.515872839,
+                            50.445552564,
+                            173.27
+                        ],
+                        [
+                            30.513405206,
+                            50.445969332,
+                            173.26
+                        ],
+                        [
+                            30.510175825,
+                            50.446488571,
+                            175.62
+                        ],
+                        [
+                            30.508609415,
+                            50.44674819,
+                            174.39
+                        ],
+                        [
+                            30.506978631,
+                            50.447028304,
+                            170.35
+                        ],
+                        [
+                            30.504510999,
+                            50.447445056,
+                            178.82
+                        ],
+                        [
+                            30.503835083,
+                            50.447581695,
+                            177.71
+                        ],
+                        [
+                            30.502161384,
+                            50.447854977,
+                            175.52
+                        ],
+                        [
+                            30.499940515,
+                            50.448210235,
+                            180.34
+                        ],
+                        [
+                            30.49833119,
+                            50.448483509,
+                            178.48
+                        ],
+                        [
+                            30.498202444,
+                            50.4485245,
+                            175.77
+                        ],
+                        [
+                            30.498202444,
+                            50.4485245,
+                            179.88
+                        ]
+                    ]
+                ]
+            }
+        }
+    ]
+}
