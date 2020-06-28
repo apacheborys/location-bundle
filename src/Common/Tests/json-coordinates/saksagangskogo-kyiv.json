@@ -1,0 +1,125 @@
+{
+    "type": "FeatureCollection",
+    "geocoding": {
+        "version": "0.1.0",
+        "attribution": "Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+        "licence": "ODbL",
+        "query": "W688117957"
+    },
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "common": {
+                    "postcode": "01033",
+                    "bbox": [
+                        30.5093708,
+                        50.4359585,
+                        30.5136163,
+                        50.4359887
+                    ]
+                },
+                "en": {
+                    "geocoding": {
+                        "place_id": 222285921,
+                        "osm_type": "way",
+                        "osm_id": 688117957,
+                        "type": "primary",
+                        "label": "Saksahanskoho Street, Бессарабка, Nova Zabudova, Kyiv, Holosiivskyi District, 01033, Ukraine",
+                        "name": "Saksahanskoho Street",
+                        "country": "Ukraine",
+                        "country_code":"ua",
+                        "postcode": "01033",
+                        "city": "Kyiv",
+                        "district": "Nova Zabudova",
+                        "locality": "Бессарабка",
+                        "admin": {
+                            "level4": "Saksahanskoho Street",
+                            "level3": "Holosiivskyi District",
+                            "level2": "Kyiv",
+                            "level1": "Kyiv region",
+                            "level0": "Ukraine"
+                        }
+                    }
+                }
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        [
+                            30.520486238,
+                            50.435900997,
+                            179.25
+                        ],
+                        [
+                            30.518361928,
+                            50.435948833,
+                            173.26
+                        ],
+                        [
+                            30.517117383,
+                            50.435928332,
+                            172.4
+                        ],
+                        [
+                            30.5160445,
+                            50.435955666,
+                            173.91
+                        ],
+                        [
+                            30.513673427,
+                            50.435941999,
+                            180.37
+                        ],
+                        [
+                            30.509752037,
+                            50.435907831,
+                            175.5
+                        ],
+                        [
+                            30.507692101,
+                            50.436222177,
+                            175.45
+                        ],
+                        [
+                            30.505975487,
+                            50.436509187,
+                            171.84
+                        ],
+                        [
+                            30.50415159,
+                            50.437807546,
+                            172.74
+                        ],
+                        [
+                            30.501469381,
+                            50.439871176,
+                            171.33
+                        ],
+                        [
+                            30.499366529,
+                            50.441511083,
+                            171.26
+                        ],
+                        [
+                            30.497006185,
+                            50.443670206,
+                            176.59
+                        ],
+                        [
+                            30.494860417,
+                            50.445678925,
+                            173.7
+                        ],
+                        [
+                            30.494860417,
+                            50.445678925,
+                            180.37
+                        ]
+                    ]
+                ]
+            }
+        }
+    ]
+}

@@ -9,6 +9,7 @@ With that bundle, you will able to build own server of geo data. Manipulation fu
 * [add, delete and update places](#working-with-database)
 * [find place what include specific coordinates point](#find-place-what-include-specific-coordinates-point)
 * [find place by text phrase](#find-place-by-text)
+* [useful functions](#useful-functions)
 
 ### Benefits
 
@@ -151,6 +152,38 @@ For `geocodeQuery` use any text what you want to find.
 ```php
 $address = $locationBundle->geocodeQuery(new \ApacheBorys\Location\Query\GeocodeQuery('Kyiv, Ukraine'));
 ```
+
+### Useful functions
+
+#### Measuring distance between two coordinates
+
+For measuring distance, please pass two coordinates to distance method. Please take attention what altitude take to calculation too.
+
+```php
+$distance = $this->location->distance(
+    new \ApacheBorys\Location\Model\Coordinates(30.520620, 50.455414, 172.6),
+    new \ApacheBorys\Location\Model\Coordinates(30.557294, 50.434596, 190.8)
+);
+```
+
+In result, you will get distance in kilometers without rounding. As result, you will have preciseness more than millimeter.
+
+#### Find common points in different places
+
+If you want to find neighbour Places with one specific Place. It's very easy to use. Also you can find intersected routes for build way.
+You can try to find all places what contain common points. Please take attention than you can specify places what you want to check as third argument.
+
+```php
+$neighbours = $this->location->findTouchedPlaces(
+    $originalPlace,
+    $maxDistanceToBorder,
+    $specificPlaces
+);
+```
+
+Where `originalPlace` is Place what we will take as base. And try to find common points from another places.
+`maxDistanceToBorder` is float value for minimum distance to possible common point. As default - 100 meters.
+`specificPlaces` is array of Places. If you will pass some Places in that argument. Location bundle will check only that Places for common points.
 
 ### Working with Database
 

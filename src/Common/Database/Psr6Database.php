@@ -130,6 +130,7 @@ class Psr6Database extends AbstractDatabase implements DataBaseInterface
                 $this->dbConfig->isUseCompression() ?
                     $rawData = json_decode(gzuncompress($item->get()), true) :
                     $rawData = json_decode($item->get(), true);
+
                 is_array($rawData) ? $result[$key] = (Place::createFromArray($rawData, [$locale])) : $result[$key] = null;
             }
         }
