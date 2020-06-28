@@ -393,7 +393,7 @@ class Place
         $this->typePlace = $typePlace;
     }
 
-    public function isEqual(Place $place): bool
+    public function isEqual(self $place): bool
     {
         return serialize($this->toArray()) === serialize($place->toArray());
     }
