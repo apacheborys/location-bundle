@@ -286,7 +286,7 @@ class LocationTest extends TestCase
                     'lon' => 30.513405206,
                     'lat' => 50.445969332,
                     'alt' => 173.26,
-                ]
+                ],
             ],
         ];
     }
@@ -335,10 +335,12 @@ class LocationTest extends TestCase
                     continue;
                 }
 
-                $tempPolygon->addCoordinates(new Coordinates(
-                    $coordinates[0],
-                    $coordinates[1],
-                    (!isset($coordinates[2]) || is_null($coordinates[2])) ? 0 : (float) $coordinates[2])
+                $tempPolygon->addCoordinates(
+                    new Coordinates(
+                        $coordinates[0],
+                        $coordinates[1],
+                        (!isset($coordinates[2]) || is_null($coordinates[2])) ? 0 : (float) $coordinates[2]
+                    )
                 );
             }
             $polygons[] = $tempPolygon;

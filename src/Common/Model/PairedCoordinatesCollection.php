@@ -13,8 +13,6 @@ declare(strict_types=1);
 namespace ApacheBorys\Location\Model;
 
 use ApacheBorys\Location\Location;
-use Exception;
-use Traversable;
 
 /**
  * @author Borys Yermokhin <borys_ermokhin@yahoo.com>

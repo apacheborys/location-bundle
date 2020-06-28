@@ -86,9 +86,9 @@ class Location
      * to possible neighbour point.
      * maxDistanceToBorder should be defined in kilometers
      *
-     * @param Place     $originalPlace
-     * @param float $maxDistanceToBorder
-     * @param Place[]   $specificPlaces
+     * @param Place   $originalPlace
+     * @param float   $maxDistanceToBorder
+     * @param Place[] $specificPlaces
      *
      * @return PairedCoordinatesCollection
      */
@@ -254,9 +254,9 @@ class Location
     }
 
     /**
-     * @param Place $originalPlace
+     * @param Place   $originalPlace
      * @param Place[] $possiblePlaces
-     * @param float $maxDistanceToBorder
+     * @param float   $maxDistanceToBorder
      *
      * @return PairedCoordinatesCollection
      */
