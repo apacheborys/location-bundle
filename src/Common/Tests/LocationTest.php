@@ -368,7 +368,7 @@ class LocationTest extends TestCase
                 [
                     'level' => 3,
                     'name' => 'Shevchenkivskyi district',
-                ]
+                ],
             ],
             'expected' => 4,
         ];

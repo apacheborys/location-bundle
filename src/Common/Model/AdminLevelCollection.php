@@ -137,7 +137,7 @@ final class AdminLevelCollection implements \IteratorAggregate, \Countable, Arra
      *
      * @return bool
      */
-    public function isContainLevels(AdminLevelCollection $otherCollection): bool
+    public function isContainLevels(self $otherCollection): bool
     {
         foreach ($otherCollection->all() as $otherLevel) {
             if (!isset($this->adminLevels[$otherLevel->getLevel()]) ||

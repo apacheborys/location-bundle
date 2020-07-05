@@ -339,13 +339,6 @@ class Psr6Database extends AbstractDatabase implements DataBaseInterface
         return true;
     }
 
-    public function findChildPlaces(AdminLevelCollection $adminLevelCollection): PlaceCollection
-    {
-
-
-        return new PlaceCollection();
-    }
-
     private function savePlace(Place $place): bool
     {
         $rawData = json_encode($place->toArray());

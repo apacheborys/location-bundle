@@ -90,7 +90,7 @@ class Location
 
         for ($searchAdminLevel = $adminLevelCollection->getMaxAdminLevel() + 1;
              $searchAdminLevel <= max($this->dataBase->getAdminLevels());
-             $searchAdminLevel++
+             ++$searchAdminLevel
         ) {
             $page = 0;
             while ($possiblePlaces = $this->dataBase->get(
