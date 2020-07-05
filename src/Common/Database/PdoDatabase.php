@@ -23,6 +23,7 @@ use ApacheBorys\Location\Database\PdoDatabase\HelperInterface;
 use ApacheBorys\Location\Database\PdoDatabase\HelperLocator;
 use ApacheBorys\Location\Model\DBConfig;
 use ApacheBorys\Location\Model\Place;
+use ApacheBorys\Location\Model\PlaceCollection;
 use ApacheBorys\Location\Model\Polygon;
 use Psr\Log\InvalidArgumentException;
 
@@ -44,11 +45,12 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
     /**
      * By that keys we will store hashes (references) to fetch real object
      * first key - locale
+     * second key - type of Place
      * second key - admin level
      * third key - compiled key from Address of current locale
      * value - hash of object
      *
-     * @var string[][][]
+     * @var string[][][][]
      */
     protected $actualKeys = [];
 
@@ -114,9 +116,9 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
         $result = [];
 
         foreach ($this->makeSearch($searchKey, $page, $maxResults, $locale, $filterAdminLevel) as $key) {
-            $adminLevel = $this->findAdminLevelForKey($locale, $key);
+            list($adminLevel, $placeType) = $this->findAdminLevelAndTypeForKey($locale, $key);
 
-            $result[] = $this->getPlace($this->actualKeys[$locale][$adminLevel][$key]);
+            $result[] = $this->getPlace($this->actualKeys[$locale][$placeType][$adminLevel][$key]);
         }
 
         return $result;
@@ -126,9 +128,9 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
     {
         if ($this->deletePlace($place->getObjectHash())) {
             foreach ($this->actualKeys as $locale => $localeKeys) {
-                $search = array_search($place->getObjectHash(), $localeKeys[$place->getMaxAdminLevel()]);
+                $search = array_search($place->getObjectHash(), $localeKeys[$place->getType()][$place->getMaxAdminLevel()]);
                 if (is_string($search)) {
-                    unset($this->actualKeys[$locale][$place->getMaxAdminLevel()][$search]);
+                    unset($this->actualKeys[$locale][$place->getType()][$place->getMaxAdminLevel()][$search]);
                 }
             }
             unset($this->objectsHashes[$place->getObjectHash()]);
@@ -139,7 +141,7 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
         return false;
     }
 
-    public function getAllPlaces(int $offset = 0, int $limit = 50): array
+    public function getAllPlaces(int $offset = 0, int $limit = 50): PlaceCollection
     {
         $result = [];
 
@@ -153,7 +155,7 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
             $result[] = $this->getPlace($rawPlace[Constants::OBJECT_HASH]);
         }
 
-        return $result;
+        return new PlaceCollection($result);
     }
 
     public function updateExistAdminLevels(): bool
@@ -285,7 +287,7 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
         foreach ($place->getAvailableAddresses() as $locale => $address) {
             $stmtSearchKeyForAddress[$locale] = $this->prepareSearchKeyForInsert($place, $address, $locale);
 
-            $this->actualKeys[$locale][$place->getMaxAdminLevel()][$this->compileKey($address, true, false)] = $place->getObjectHash();
+            $this->actualKeys[$locale][$place->getType()][$place->getMaxAdminLevel()][$this->compileKey($address, true, false)] = $place->getObjectHash();
         }
 
         return $stmtSearchKeyForAddress;
@@ -607,7 +609,7 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
 
             $rawActKeys = $stmt->fetchAll();
             foreach ($rawActKeys as $rawActKey) {
-                $this->actualKeys[$rawActKey[Constants::LOCALE]][$rawActKey[Constants::LEVEL]][$rawActKey[Constants::SEARCH_TEXT]] = $rawActKey[Constants::OBJECT_HASH];
+                $this->actualKeys[$rawActKey[Constants::LOCALE]][$rawActKey[Constants::TYPE]][$rawActKey[Constants::LEVEL]][$rawActKey[Constants::SEARCH_TEXT]] = $rawActKey[Constants::OBJECT_HASH];
             }
 
             ++$page;

@@ -32,6 +32,7 @@ final class PostgresqlHelper implements HelperInterface
 	"'.Constants::COMPRESSED_DATA.'"	BYTEA,
 	"'.Constants::PROVIDED_BY.'"	TEXT,
 	"'.Constants::LOCALE.'"	TEXT,
+	"'.Constants::TYPE.'" TEXT,
 	"'.Constants::BOUNDS_SOUTH.'"	REAL,
 	"'.Constants::BOUNDS_WEST.'"	REAL,
 	"'.Constants::BOUNDS_NORTH.'"	REAL,

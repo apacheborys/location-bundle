@@ -15,6 +15,7 @@ namespace ApacheBorys\Location\Database;
 use ApacheBorys\Location\Model\Address;
 use ApacheBorys\Location\Model\DBConfig;
 use ApacheBorys\Location\Model\Place;
+use ApacheBorys\Location\Model\PlaceCollection;
 
 /**
  * @author Borys Yermokhin <borys_ermokhin@yahoo.com>
@@ -61,9 +62,9 @@ interface DataBaseInterface
      * @param int $offset
      * @param int $limit
      *
-     * @return Place[]
+     * @return PlaceCollection
      */
-    public function getAllPlaces(int $offset = 0, int $limit = 50): array;
+    public function getAllPlaces(int $offset = 0, int $limit = 50): PlaceCollection;
 
     /**
      * All admin levels what contain database
@@ -113,7 +114,19 @@ interface DataBaseInterface
         bool $useAddress = true
     ): string;
 
+    /**
+     * Service method for update all existing admin levels
+     *
+     * @return bool
+     */
     public function updateExistAdminLevels(): bool;
 
+    /**
+     * Service method for normalize string for key name what should stored in database
+     *
+     * @param string $rawString
+     *
+     * @return mixed
+     */
     public function normalizeStringForKeyName(string $rawString);
 }

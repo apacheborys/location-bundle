@@ -30,6 +30,8 @@ final class Constants
 
     const LOCALE = 'locale';
 
+    const TYPE = 'type';
+
     const PROVIDED_BY = 'provided_by';
 
     const BOUNDS_WEST = 'bounds_west';
@@ -77,6 +79,7 @@ final class Constants
         self::COMPRESSED_DATA => '',
         self::PROVIDED_BY => Place::class.'::providedBy',
         self::LOCALE => Place::class.'::locale',
+        self::TYPE => Place::class.'::type',
         self::BOUNDS_WEST => Bounds::class.'::west',
         self::BOUNDS_SOUTH => Bounds::class.'::south',
         self::BOUNDS_NORTH => Bounds::class.'::north',

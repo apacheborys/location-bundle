@@ -64,9 +64,9 @@ class Place
     private $objectHash;
 
     /**
-     * @var string|null
+     * @var string
      */
-    private $typePlace;
+    private $type = '';
 
     /**
      * @param Address|Address[] $address
@@ -101,7 +101,7 @@ class Place
         $this->timezone = $timezone;
         $this->providedBy = $providedBy;
         $this->bounds = $bounds;
-        $this->typePlace = $typePlace;
+        $this->type = $typePlace;
     }
 
     /**
@@ -162,17 +162,7 @@ class Place
      */
     public function getMaxAdminLevel(): int
     {
-        $address = $this->getSelectedAddress();
-
-        $max = 0;
-        /** @var AdminLevel $level */
-        foreach ($address->getAdminLevels() as $level) {
-            if (strlen($level->getName()) > 0 && $level->getLevel() > $max) {
-                $max = $level->getLevel();
-            }
-        }
-
-        return $max;
+        return $this->getSelectedAddress()->getAdminLevels()->getMaxAdminLevel();
     }
 
     /**
@@ -308,7 +298,7 @@ class Place
         $result['providedBy'] = $this->providedBy;
         $result['bounds'] = $this->bounds->toArray();
         $result['timezone'] = $this->timezone;
-        $result['typePlace'] = $this->typePlace;
+        $result['typePlace'] = $this->type;
 
         return $result;
     }
@@ -378,19 +368,19 @@ class Place
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getTypePlace()
+    public function getType()
     {
-        return $this->typePlace;
+        return $this->type;
     }
 
     /**
-     * @param string $typePlace
+     * @param string $type
      */
-    public function setTypePlace(string $typePlace)
+    public function setType(string $type)
     {
-        $this->typePlace = $typePlace;
+        $this->type = $type;
     }
 
     public function isEqual(self $place): bool

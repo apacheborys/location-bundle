@@ -2,6 +2,11 @@
 
 The change log describes what is "Added", "Removed", "Changed" or "Fixed" between each release.
 
+## 2.12
+
++ Add functionality for find all child places of specific Admin level collection
++ Implement type property for Place entity
+
 ## 2.1
 
 + Add to coordinates altitude

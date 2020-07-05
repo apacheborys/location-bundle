@@ -94,7 +94,7 @@ class LocationTest extends TestCase
     {
         $totalCount = 0;
         $page = 0;
-        while ($places = $this->location->getAllPlaces($page * 50)) {
+        while ($places = $this->location->getAllPlaces($page * 50)->all()) {
             foreach ($places as $place) {
                 $this->assertEquals(Place::class, get_class($place));
                 ++$totalCount;
@@ -109,13 +109,13 @@ class LocationTest extends TestCase
      */
     public function testDeletePlace()
     {
-        $places = \SplFixedArray::fromArray($this->location->getAllPlaces());
+        $places = \SplFixedArray::fromArray($this->location->getAllPlaces()->all());
         $places->rewind();
         $this->location->deletePlace($places->current());
 
         $totalCount = 0;
         $page = 0;
-        while ($places = $this->location->getAllPlaces($page * 50)) {
+        while ($places = $this->location->getAllPlaces($page * 50)->all()) {
             $totalCount += count($places);
             ++$page;
         }
@@ -187,6 +187,29 @@ class LocationTest extends TestCase
 
             $this->assertArrayHasKey($adminLevelName, $expected);
             $this->assertEquals($expected[$adminLevelName], $pairedCoordinates->getCoordinatesB()->toArray());
+        }
+    }
+
+    /**
+     * @dataProvider providerFindChildPlaces
+     *
+     * @param array $levelsForCollection
+     * @param int   $expected
+     */
+    public function testFindChildPlaces(array $levelsForCollection, int $expected)
+    {
+        $collection = new AdminLevelCollection();
+        foreach ($levelsForCollection as $rawAdminLevel) {
+            $collection->add(new AdminLevel($rawAdminLevel['level'], $rawAdminLevel['name']));
+        }
+
+        $result = $this->location->findChildPlaces($collection);
+        $this->assertCount($expected, $result);
+
+        /** @var Place $place */
+        foreach ($result as $place) {
+            $this->assertInstanceOf(Place::class, $place);
+            $this->assertTrue($place->getSelectedAddress()->getAdminLevels()->isContainLevels($collection));
         }
     }
 
@@ -288,6 +311,84 @@ class LocationTest extends TestCase
                     'alt' => 173.26,
                 ],
             ],
+        ];
+    }
+
+    /**
+     * @see testFindChildPlaces
+     *
+     * @case 1 Empty result
+     * @case 2 Not full result for existent Places for Kyiv city
+     * @case 3 All Places for Kyiv city what located in database
+     *
+     * @return \Iterator
+     */
+    public function providerFindChildPlaces(): \Iterator
+    {
+        yield [
+            'levelsForCollection' => [
+                [
+                    'level' => 0,
+                    'name' => 'Ukraine',
+                ],
+                [
+                    'level' => 1,
+                    'name' => 'Kyiv region',
+                ],
+                [
+                    'level' => 2,
+                    'name' => 'Kyiv',
+                ],
+                [
+                    'level' => 3,
+                    'name' => 'Shevchenkivskyi district',
+                ],
+                [
+                    'level' => 4,
+                    'name' => 'Volodymyrska Street',
+                ],
+            ],
+            'expected' => 0,
+        ];
+
+        yield [
+            'levelsForCollection' => [
+                [
+                    'level' => 0,
+                    'name' => 'Ukraine',
+                ],
+                [
+                    'level' => 1,
+                    'name' => 'Kyiv region',
+                ],
+                [
+                    'level' => 2,
+                    'name' => 'Kyiv',
+                ],
+                [
+                    'level' => 3,
+                    'name' => 'Shevchenkivskyi district',
+                ],
+            ],
+            'expected' => 4,
+        ];
+
+        yield [
+            'levelsForCollection' => [
+                [
+                    'level' => 0,
+                    'name' => 'Ukraine',
+                ],
+                [
+                    'level' => 1,
+                    'name' => 'Kyiv region',
+                ],
+                [
+                    'level' => 2,
+                    'name' => 'Kyiv',
+                ],
+            ],
+            'expected' => 5,
         ];
     }
 

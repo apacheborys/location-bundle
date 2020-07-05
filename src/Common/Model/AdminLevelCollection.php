@@ -117,4 +117,59 @@ final class AdminLevelCollection implements \IteratorAggregate, \Countable, Arra
 
         return new self($adminLevels);
     }
+
+    public function getMaxAdminLevel(): int
+    {
+        $max = 0;
+        foreach ($this->adminLevels as $level) {
+            if (strlen($level->getName()) > 0 && $level->getLevel() > $max) {
+                $max = $level->getLevel();
+            }
+        }
+
+        return $max;
+    }
+
+    /**
+     * Shows is otherCollection contains same levels than original collection
+     *
+     * @param AdminLevelCollection $otherCollection
+     *
+     * @return bool
+     */
+    public function isContainLevels(self $otherCollection): bool
+    {
+        foreach ($otherCollection->all() as $otherLevel) {
+            if (!isset($this->adminLevels[$otherLevel->getLevel()]) ||
+                trim($otherLevel->getName()) != trim($this->adminLevels[$otherLevel->getLevel()]->getName())
+            ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function add(AdminLevel $adminLevel): bool
+    {
+        if (isset($this->adminLevels[$adminLevel->getLevel()])) {
+            return false;
+        }
+        $this->validateBeforeAdd($adminLevel);
+
+        $this->adminLevels[$adminLevel->getLevel()] = $adminLevel;
+
+        return true;
+    }
+
+    public function delete(int $level): bool
+    {
+        if (!isset($this->adminLevels[$level])) {
+            return false;
+        }
+
+        unset($this->adminLevels[$level]);
+
+        return true;
+    }
 }
