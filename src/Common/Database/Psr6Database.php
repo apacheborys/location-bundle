@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace ApacheBorys\Location\Database;
 
-use ApacheBorys\Location\Model\AdminLevelCollection;
 use ApacheBorys\Location\Model\DBConfig;
 use ApacheBorys\Location\Model\Place;
 use ApacheBorys\Location\Model\PlaceCollection;
