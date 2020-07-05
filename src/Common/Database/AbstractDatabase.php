@@ -20,7 +20,7 @@ use ApacheBorys\Location\Model\Place;
 /**
  * @author Borys Yermokhin <borys_ermokhin@yahoo.com>
  */
-abstract class AbstractDatabase
+abstract class AbstractDatabase implements DataBaseInterface
 {
     /**
      * @var bool[]
@@ -106,8 +106,6 @@ abstract class AbstractDatabase
      * Levels compiler for forming identifier for Address entity in @see compileKey
      *
      * @return string[]
-     *
-     * @throws \Psr\Cache\InvalidArgumentException
      */
     protected function compileLevelsForKey(Address $address): array
     {

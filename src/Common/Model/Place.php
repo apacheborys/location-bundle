@@ -162,17 +162,7 @@ class Place
      */
     public function getMaxAdminLevel(): int
     {
-        $address = $this->getSelectedAddress();
-
-        $max = 0;
-        /** @var AdminLevel $level */
-        foreach ($address->getAdminLevels() as $level) {
-            if (strlen($level->getName()) > 0 && $level->getLevel() > $max) {
-                $max = $level->getLevel();
-            }
-        }
-
-        return $max;
+        return $this->getSelectedAddress()->getAdminLevels()->getMaxAdminLevel();
     }
 
     /**

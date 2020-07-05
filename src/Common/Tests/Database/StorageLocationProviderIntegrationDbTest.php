@@ -84,7 +84,7 @@ abstract class StorageLocationProviderIntegrationDbTest extends TestCase
         ));
         $this->dataBase->add($origPlace);
 
-        $result = $this->dataBase->getAllPlaces();
+        $result = $this->dataBase->getAllPlaces()->all();
 
         $this->assertTrue(is_array($result));
         $this->assertGreaterThan(0, count($result));
@@ -118,7 +118,7 @@ abstract class StorageLocationProviderIntegrationDbTest extends TestCase
         $page = 0;
         $limit = 30;
 
-        while ($result = $this->dataBase->getAllPlaces($page * $limit, $limit)) {
+        while ($result = $this->dataBase->getAllPlaces($page * $limit, $limit)->all()) {
             foreach ($result as $place) {
                 $this->dataBase->delete($place);
             }

@@ -40,11 +40,25 @@ class Location
         $this->dataBase = $dataBase;
     }
 
+    /**
+     * Add new place to database
+     *
+     * @param Place $place
+     *
+     * @return bool
+     */
     public function addPlace(Place $place): bool
     {
         return $this->dataBase->add($place);
     }
 
+    /**
+     * Delete existent place from database
+     *
+     * @param Place $place
+     *
+     * @return bool
+     */
     public function deletePlace(Place $place): bool
     {
         return $this->dataBase->delete($place);
@@ -54,13 +68,57 @@ class Location
      * @param int $offset
      * @param int $limit
      *
-     * @return Place[]
+     * @return PlaceCollection
      */
-    public function getAllPlaces(int $offset = 0, int $limit = 50): array
+    public function getAllPlaces(int $offset = 0, int $limit = 50): PlaceCollection
     {
         return $this->dataBase->getAllPlaces($offset, $limit);
     }
 
+    /**
+     * Find all Places what has less admin level and same level what contains passed AdminLevelCollection
+     *
+     * @param AdminLevelCollection $adminLevelCollection
+     * @param string               $locale
+     *
+     * @return PlaceCollection
+     */
+    public function findChildPlaces(AdminLevelCollection $adminLevelCollection, string $locale = ''): PlaceCollection
+    {
+        $result = new PlaceCollection();
+        $tempPlace = new Address($this->getName(), $adminLevelCollection);
+
+        for ($searchAdminLevel = $adminLevelCollection->getMaxAdminLevel() + 1;
+             $searchAdminLevel <= max($this->dataBase->getAdminLevels());
+             $searchAdminLevel++
+        ) {
+            $page = 0;
+            while ($possiblePlaces = $this->dataBase->get(
+                $this->dataBase->compileKey($tempPlace, true, true, false),
+                $page,
+                $this->dataBase->getDbConfig()->getMaxPlacesInOneResponse(),
+                $locale,
+                $searchAdminLevel
+            )) {
+                foreach ($possiblePlaces as $possiblePlace) {
+                    if ($possiblePlace->getSelectedAddress()->getAdminLevels()->isContainLevels($adminLevelCollection)) {
+                        $result->add($possiblePlace);
+                    }
+                }
+                ++$page;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Find place according to text phrase what contains in GeocodeQuery
+     *
+     * @param GeocodeQuery $query
+     *
+     * @return PlaceCollection
+     */
     public function geocodeQuery(GeocodeQuery $query): PlaceCollection
     {
         $places = $this->dataBase->get(
@@ -73,6 +131,13 @@ class Location
         return new PlaceCollection($places ? $places : []);
     }
 
+    /**
+     * Find place according to coordinates what contains ReverseQuery. Place will be returned with less admin level
+     *
+     * @param ReverseQuery $query
+     *
+     * @return PlaceCollection
+     */
     public function reverseQuery(ReverseQuery $query): PlaceCollection
     {
         $result = $this->findPlaceByCoordinates($query->getCoordinates(), $query->getLocale() ? $query->getLocale() : '');
@@ -290,7 +355,7 @@ class Location
      *
      * @return PairedCoordinates[]
      */
-    private function findTouchedCoord(Place $originalPlace, Place $possiblePlace, float $maxDistanceToBorder): array
+    public function findTouchedCoord(Place $originalPlace, Place $possiblePlace, float $maxDistanceToBorder): array
     {
         $result = [];
 

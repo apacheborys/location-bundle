@@ -23,6 +23,7 @@ use ApacheBorys\Location\Database\PdoDatabase\HelperInterface;
 use ApacheBorys\Location\Database\PdoDatabase\HelperLocator;
 use ApacheBorys\Location\Model\DBConfig;
 use ApacheBorys\Location\Model\Place;
+use ApacheBorys\Location\Model\PlaceCollection;
 use ApacheBorys\Location\Model\Polygon;
 use Psr\Log\InvalidArgumentException;
 
@@ -139,7 +140,7 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
         return false;
     }
 
-    public function getAllPlaces(int $offset = 0, int $limit = 50): array
+    public function getAllPlaces(int $offset = 0, int $limit = 50): PlaceCollection
     {
         $result = [];
 
@@ -153,7 +154,7 @@ class PdoDatabase extends AbstractDatabase implements DataBaseInterface
             $result[] = $this->getPlace($rawPlace[Constants::OBJECT_HASH]);
         }
 
-        return $result;
+        return new PlaceCollection($result);
     }
 
     public function updateExistAdminLevels(): bool

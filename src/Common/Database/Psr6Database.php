@@ -12,8 +12,10 @@ declare(strict_types=1);
 
 namespace ApacheBorys\Location\Database;
 
+use ApacheBorys\Location\Model\AdminLevelCollection;
 use ApacheBorys\Location\Model\DBConfig;
 use ApacheBorys\Location\Model\Place;
+use ApacheBorys\Location\Model\PlaceCollection;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Log\InvalidArgumentException;
 
@@ -143,10 +145,10 @@ class Psr6Database extends AbstractDatabase implements DataBaseInterface
      *
      * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function getAllPlaces(int $offset = 0, int $limit = 50): array
+    public function getAllPlaces(int $offset = 0, int $limit = 50): PlaceCollection
     {
         if ($offset > count($this->objectsHashes)) {
-            return [];
+            return new PlaceCollection();
         }
 
         if ($limit > $this->dbConfig->getMaxPlacesInOneResponse()) {
@@ -177,7 +179,7 @@ class Psr6Database extends AbstractDatabase implements DataBaseInterface
             }
         }
 
-        return $result;
+        return new PlaceCollection($result);
     }
 
     /**
@@ -335,6 +337,13 @@ class Psr6Database extends AbstractDatabase implements DataBaseInterface
         $this->databaseProvider->save($item);
 
         return true;
+    }
+
+    public function findChildPlaces(AdminLevelCollection $adminLevelCollection): PlaceCollection
+    {
+
+
+        return new PlaceCollection();
     }
 
     private function savePlace(Place $place): bool

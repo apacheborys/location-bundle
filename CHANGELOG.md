@@ -2,10 +2,16 @@
 
 The change log describes what is "Added", "Removed", "Changed" or "Fixed" between each release.
 
+## 2.12
+
++ Add functionality for find all child places of specific Admin level collection
+
 ## 2.1
 
 + Add to coordinates altitude
 + Add measuring distance between two coordinates
++ Fix potential issue in findPlaceByCoordinates method
++ Implement functionality for find neighbor places
 
 ## 2.0
 

@@ -68,4 +68,16 @@ final class PlaceCollection implements \IteratorAggregate, \Countable
     {
         return $this->places;
     }
+
+    /**
+     * @param Place $place
+     *
+     * @return $this
+     */
+    public function add(Place $place): self
+    {
+        $this->places[] = $place;
+
+        return $this;
+    }
 }
