@@ -26,11 +26,12 @@ class Psr6Database extends AbstractDatabase implements DataBaseInterface
     /**
      * By that keys we will store hashes (references) to fetch real object
      * first key - locale
+     * second key - type of Place
      * second key - admin level
      * third key - compiled key from Address of current locale
      * value - hash of object
      *
-     * @var string[][][]
+     * @var string[][][][]
      */
     protected $actualKeys = [];
 
@@ -124,9 +125,9 @@ class Psr6Database extends AbstractDatabase implements DataBaseInterface
         $result = [];
 
         foreach ($this->makeSearch($searchKey, $page, $maxResults, $locale, $filterAdminLevel) as $key) {
-            $adminLevel = $this->findAdminLevelForKey($locale, $key);
+            list($adminLevel, $placeType) = $this->findAdminLevelAndTypeForKey($locale, $key);
 
-            $item = $this->databaseProvider->getItem($this->actualKeys[$locale][$adminLevel][$key]);
+            $item = $this->databaseProvider->getItem($this->actualKeys[$locale][$placeType][$adminLevel][$key]);
             if ($item->isHit()) {
                 $this->dbConfig->isUseCompression() ?
                     $rawData = json_decode(gzuncompress($item->get()), true) :
@@ -199,8 +200,8 @@ class Psr6Database extends AbstractDatabase implements DataBaseInterface
         foreach ($this->actualKeys as $locale => $keys) {
             $place->selectLocale($locale);
             $keyForDelete = $this->compileKey($place->getSelectedAddress());
-            if (isset($keys[$place->getMaxAdminLevel()][$keyForDelete])) {
-                unset($this->actualKeys[$locale][$place->getMaxAdminLevel()][$keyForDelete]);
+            if (isset($keys[$place->getType()][$place->getMaxAdminLevel()][$keyForDelete])) {
+                unset($this->actualKeys[$locale][$place->getType()][$place->getMaxAdminLevel()][$keyForDelete]);
                 $this->updateActualKeys();
             }
         }
@@ -357,7 +358,7 @@ class Psr6Database extends AbstractDatabase implements DataBaseInterface
         $this->updateHashKeys();
 
         foreach ($this->compileKeys($place) as $locale => $key) {
-            $this->actualKeys[$locale][$place->getMaxAdminLevel()][$key] = $place->getObjectHash();
+            $this->actualKeys[$locale][$place->getType()][$place->getMaxAdminLevel()][$key] = $place->getObjectHash();
         }
         $this->updateActualKeys();
 

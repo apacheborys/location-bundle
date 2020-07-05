@@ -5,6 +5,7 @@ The change log describes what is "Added", "Removed", "Changed" or "Fixed" betwee
 ## 2.12
 
 + Add functionality for find all child places of specific Admin level collection
++ Implement type property for Place entity
 
 ## 2.1
 

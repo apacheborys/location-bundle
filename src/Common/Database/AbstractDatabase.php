@@ -188,22 +188,35 @@ abstract class AbstractDatabase implements DataBaseInterface
      * @param int    $maxResults
      * @param string $locale
      * @param int    $filterAdminLevel
+     * @param string $filterType
      *
      * @return string[]
      */
-    protected function makeSearch(string $phrase, int $page, int $maxResults, string $locale, int $filterAdminLevel = -1): array
-    {
+    protected function makeSearch(
+        string $phrase,
+        int $page,
+        int $maxResults,
+        string $locale,
+        int $filterAdminLevel = -1,
+        string $filterType = ''
+    ): array {
         $result = [];
 
-        foreach ($this->actualKeys[$locale] as $adminLevel => $actualKeys) {
-            if ($filterAdminLevel > -1 && $filterAdminLevel !== $adminLevel) {
+        foreach ($this->actualKeys[$locale] as $type => $adminLevels) {
+            if (strlen($type) > 0 && $type !== $filterType) {
                 continue;
             }
 
-            foreach ($actualKeys as $actualKey => $objectHash) {
-                $grade = $this->evaluateHitPhrase($phrase, $actualKey);
-                if ($grade > 0) {
-                    $result[$actualKey] = $grade;
+            foreach ($adminLevels as $adminLevel => $actualKeys) {
+                if ($filterAdminLevel > -1 && $filterAdminLevel !== $adminLevel) {
+                    continue;
+                }
+
+                foreach ($actualKeys as $actualKey => $objectHash) {
+                    $grade = $this->evaluateHitPhrase($phrase, $actualKey);
+                    if ($grade > 0) {
+                        $result[$actualKey] = $grade;
+                    }
                 }
             }
         }
@@ -254,13 +267,15 @@ abstract class AbstractDatabase implements DataBaseInterface
      * @param string $locale
      * @param string $key
      *
-     * @return int
+     * @return array
      */
-    protected function findAdminLevelForKey(string $locale, string $key): int
+    protected function findAdminLevelAndTypeForKey(string $locale, string $key): array
     {
         foreach ($this->existAdminLevels as $existAdminLevel => $value) {
-            if (isset($this->actualKeys[$locale][$existAdminLevel][$key])) {
-                return $existAdminLevel;
+            foreach (array_keys($this->actualKeys[$locale]) as $existType) {
+                if (isset($this->actualKeys[$locale][$existType][$existAdminLevel][$key])) {
+                    return [$existAdminLevel, $existType];
+                }
             }
         }
 
